@@ -17,6 +17,8 @@ signal mouse_exited(card: Card)
 @onready var typeSprite: Sprite2D = $CardTypeSprite
 @onready var baseSprite: Sprite2D = $CardBaseSprite
 
+var playability : bool = false
+
 func _ready() -> void:
 	set_card_values(cardCost, cardName, cardAdditionalInfo, cardImageName, cardType)
 

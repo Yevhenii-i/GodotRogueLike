@@ -1,7 +1,7 @@
 @tool
 extends Node2D
 
-signal card_activate(card: Card)
+signal card_activate(card_id: int, card: Card)
 
 @export var x_pos: int = 0
 @export var y_pos: int = -128
@@ -24,13 +24,13 @@ func add_card(card_id: int, card_data: CardData):
 	add_child(hand_card)
 	hand_card.mouse_entered.connect(_handle_card_hover)
 	hand_card.mouse_exited.connect(_handle_card_unhover)
-	
+	hand.keys()
 	hand_card.load_card_data(card_data)
 	position_cards()
 
 
 func _handle_card_hover(card):
-	print("touch")
+	print(card.playability)
 	hovered.push_back(card)
 
 
@@ -70,11 +70,13 @@ func remove_card_by_entity(card: Card):
 func _input(event):
 	if event.is_action_pressed("mouse_click") && current_selected_card_index >= 0:
 		var card = hand[current_selected_card_index]
-		remove_card_by_entity(card)
+		if card.playability == true:
+			card.playability = false
+			remove_card_by_entity(card)
+			card_activate.emit(current_selected_card_index, card)
+			#card.queue_free()
 		
-		#card.queue_free()
 		card.unhighlight()
-		card_activate.emit(card)
 		current_selected_card_index = -1
 
 
@@ -95,6 +97,6 @@ func _process(delta: float) -> void:
 			highest_hovered_index = max(highest_hovered_index, index)
 
 
-		if highest_hovered_index >= 0 && highest_hovered_index < hand.size():
+		if highest_hovered_index >= 0:
 			hand[highest_hovered_index].highlight()
 			current_selected_card_index = highest_hovered_index

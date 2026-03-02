@@ -1,5 +1,7 @@
 class_name BattleManager extends Node
 
+signal state_changed()
+
 enum ACTIONS { BUILD = 1, GET_GOLD = 2, GET_CARD = 3 }
 enum PARTICIPANTS { PLAYER = 1, AI = 2}
 
@@ -34,25 +36,27 @@ func _ready() -> void:
 	
 	#create init for second player as AIManager
 	
-	
+	await run_battle_loop()
 
 func _process(delta: float) -> void:
-	if state.active_character == state.CHARACTERS.FIRST:
-		state.available_actions = state.action_stats[1]
-		
-		
-		#while !state.available_actions.is_empty():
+	pass
+
+
+func run_battle_loop():
+	while true:
+		for character in state.CHARACTERS.values():
+			state.active_character = character
+			state.available_actions = state.action_stats[character].duplicate()
+			await run_character_turn()
+		state.round += 1
+
+
+func run_character_turn():
+	while !state.available_actions.is_empty():
 		bp1_manager.update(state)
-		await state_changed()
-		
-		bp1_manager.update(state)
-		await state_changed()
+		await state_changed
 
 
 func _on_manager_action(action: GameAction):
 	action.execute(state)
-	state_changed()
-
-
-func state_changed():
-	pass
+	state_changed.emit()

@@ -58,8 +58,16 @@ text = "0"
 [node name="EnemyHand" parent="." unique_id=1620162561 instance=ExtResource("12_1fnen")]
 position = Vector2(960, -10)
 
+[node name="EndTurnButton" type="Button" parent="." unique_id=176593769]
+offset_left = 858.0
+offset_top = 669.0
+offset_right = 993.0
+offset_bottom = 775.0
+text = "End Turn"
+
 [connection signal="card_activate" from="PlayerHand" to="." method="_on_player_hand_card_activate"]
 [connection signal="pressed" from="DeckButton" to="." method="_on_deck_button_pressed"]
 [connection signal="pressed" from="MoneyButton" to="." method="_on_money_button_pressed"]
+[connection signal="pressed" from="EndTurnButton" to="." method="_on_end_turn_button_pressed"]
 
 [editable path="PlayerMoney"]
