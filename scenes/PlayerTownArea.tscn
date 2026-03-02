@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://dk7ibf18qbr5m"]
+
+[ext_resource type="Script" uid="uid://b5r1m0qfqkg8t" path="res://scripts/ActiveCards.gd" id="1_ax0eq"]
+[ext_resource type="PackedScene" uid="uid://bykmkql3qduqi" path="res://scenes/СardСontainer.tscn" id="1_ws0ib"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ax0eq"]
+size = Vector2(700, 470)
+
+[node name="PlayerTownArea" type="Node2D" unique_id=139850062]
+script = ExtResource("1_ax0eq")
+
+[node name="CardArea" type="HFlowContainer" parent="." unique_id=207048105]
+offset_left = -350.0
+offset_top = -235.0
+offset_right = 350.0
+offset_bottom = 235.0
+
+[node name="CardContainer" parent="CardArea" unique_id=1873597303 instance=ExtResource("1_ws0ib")]
+layout_mode = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=240386074]
+shape = SubResource("RectangleShape2D_ax0eq")

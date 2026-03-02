@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://bd8sk38nm8uof"]
+
+[ext_resource type="Script" uid="uid://jhrg7180q6n7" path="res://scripts/EnemyHand.gd" id="1_hpx1k"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_chaf8"]
+size = Vector2(1280, 300)
+
+[node name="EnemyHand" type="Node2D" unique_id=1620162561]
+script = ExtResource("1_hpx1k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=50117998]
+shape = SubResource("RectangleShape2D_chaf8")

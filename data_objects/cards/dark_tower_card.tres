@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CardData" format=3 uid="uid://7dn7b6e8od6b"]
+
+[ext_resource type="Script" uid="uid://dktqvwmfpagc5" path="res://data_objects/CardData.gd" id="1_6lhfy"]
+
+[resource]
+script = ExtResource("1_6lhfy")
+name = "Dark Tower"
+additionalInfo = "If is a part of a city, +3 points"
+cost = 5
+textureName = "Dark Tower"
+type = "unique"
+metadata/_custom_type_script = "uid://dktqvwmfpagc5"

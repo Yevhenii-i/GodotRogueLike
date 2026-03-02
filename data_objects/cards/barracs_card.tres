@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardData" format=3 uid="uid://bi1nt63tnlm47"]
+
+[ext_resource type="Script" uid="uid://dktqvwmfpagc5" path="res://data_objects/CardData.gd" id="1_smvf8"]
+
+[resource]
+script = ExtResource("1_smvf8")
+name = "Barracks"
+cost = 2
+textureName = "Dwarven Building"
+type = "battle"
+metadata/_custom_type_script = "uid://dktqvwmfpagc5"

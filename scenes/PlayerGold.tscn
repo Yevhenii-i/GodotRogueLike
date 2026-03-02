@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://dcvj48q4s441q"]
+
+[ext_resource type="Texture2D" uid="uid://bx8nyckyy3pen" path="res://sprites/money.png" id="1_oj1xm"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_rrw1x"]
+font_size = 24
+
+[node name="PlayerMoney" type="Sprite2D" unique_id=257936867]
+scale = Vector2(2.44, 2.44)
+texture = ExtResource("1_oj1xm")
+
+[node name="MoneyAmount" type="Label" parent="." unique_id=654588070]
+offset_left = 15.0
+offset_top = -15.0
+offset_right = 55.0
+offset_bottom = 19.0
+text = "10"
+label_settings = SubResource("LabelSettings_rrw1x")

@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://c107yds1grwaa"]
+
+[ext_resource type="Script" uid="uid://dbw7hhh76sg86" path="res://scripts/UIManager.gd" id="1_eoump"]
+[ext_resource type="PackedScene" uid="uid://d1gueq6cfg202" path="res://scenes/PlayerHand.tscn" id="2_be0d5"]
+[ext_resource type="PackedScene" uid="uid://dk7ibf18qbr5m" path="res://scenes/PlayerTownArea.tscn" id="3_e26j6"]
+[ext_resource type="Texture2D" uid="uid://c8igsfj077vo8" path="res://sprites/card_sleeve.png" id="4_6vv1o"]
+[ext_resource type="Texture2D" uid="uid://d3o25b7xnxl53" path="res://sprites/card_sleeve_disabled.png" id="5_oihk3"]
+[ext_resource type="Texture2D" uid="uid://dp6pityp4xpva" path="res://sprites/card_sleeve_selected.png" id="6_tji62"]
+[ext_resource type="Texture2D" uid="uid://bx8nyckyy3pen" path="res://sprites/money.png" id="7_urolh"]
+[ext_resource type="Texture2D" uid="uid://dcb1bwa1k1mq5" path="res://sprites/money_selected.png" id="8_rrw1x"]
+[ext_resource type="Texture2D" uid="uid://b6br1k3k0ac7o" path="res://sprites/money_disabled.png" id="9_eoump"]
+[ext_resource type="Texture2D" uid="uid://bvdsvsqvj6fiw" path="res://sprites/background.png" id="10_rrw1x"]
+[ext_resource type="PackedScene" uid="uid://dcvj48q4s441q" path="res://scenes/PlayerGold.tscn" id="11_eoump"]
+[ext_resource type="PackedScene" uid="uid://bd8sk38nm8uof" path="res://scenes/EnemyHand.tscn" id="12_1fnen"]
+
+[node name="BattleScreen" type="Node2D" unique_id=1634930398]
+script = ExtResource("1_eoump")
+
+[node name="PlayerHand" parent="." unique_id=1937359847 instance=ExtResource("2_be0d5")]
+position = Vector2(960, 1086.035)
+x_pos = 0
+y_pos = -128
+
+[node name="PlayerTownArea" parent="." unique_id=139850062 instance=ExtResource("3_e26j6")]
+position = Vector2(480, 540)
+
+[node name="DeckButton" type="TextureButton" parent="." unique_id=893373976]
+offset_left = 851.0
+offset_top = 311.0
+offset_right = 991.0
+offset_bottom = 521.0
+texture_normal = ExtResource("4_6vv1o")
+texture_hover = ExtResource("6_tji62")
+texture_disabled = ExtResource("5_oihk3")
+stretch_mode = 0
+
+[node name="MoneyButton" type="TextureButton" parent="." unique_id=140917240]
+offset_left = 871.0
+offset_top = 538.0
+offset_right = 972.0
+offset_bottom = 639.0
+texture_normal = ExtResource("7_urolh")
+texture_hover = ExtResource("8_rrw1x")
+texture_disabled = ExtResource("9_eoump")
+stretch_mode = 0
+
+[node name="Background" type="Sprite2D" parent="." unique_id=945011050]
+z_index = -1
+position = Vector2(960, 540)
+texture = ExtResource("10_rrw1x")
+
+[node name="PlayerMoney" parent="." unique_id=257936867 instance=ExtResource("11_eoump")]
+position = Vector2(56, 1012)
+
+[node name="MoneyAmount" parent="PlayerMoney" index="0" unique_id=654588070]
+text = "0"
+
+[node name="EnemyHand" parent="." unique_id=1620162561 instance=ExtResource("12_1fnen")]
+position = Vector2(960, -10)
+
+[connection signal="card_activate" from="PlayerHand" to="." method="_on_player_hand_card_activate"]
+[connection signal="pressed" from="DeckButton" to="." method="_on_deck_button_pressed"]
+[connection signal="pressed" from="MoneyButton" to="." method="_on_money_button_pressed"]
+
+[editable path="PlayerMoney"]

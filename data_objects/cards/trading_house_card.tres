@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardData" format=3 uid="uid://o7hw7ttqpdsx"]
+
+[ext_resource type="Script" uid="uid://dktqvwmfpagc5" path="res://data_objects/CardData.gd" id="1_1frxf"]
+
+[resource]
+script = ExtResource("1_1frxf")
+name = "Trading House"
+cost = 2
+textureName = "House"
+type = "trade"
+metadata/_custom_type_script = "uid://dktqvwmfpagc5"

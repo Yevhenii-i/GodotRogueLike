@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardData" format=3 uid="uid://dlt7ri60ks6bm"]
+
+[ext_resource type="Script" uid="uid://dktqvwmfpagc5" path="res://data_objects/CardData.gd" id="1_g0m8k"]
+
+[resource]
+script = ExtResource("1_g0m8k")
+name = "Tavern"
+cost = 3
+textureName = "Tavern"
+type = "culture"
+metadata/_custom_type_script = "uid://dktqvwmfpagc5"

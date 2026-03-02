@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardData" format=3 uid="uid://bxbl8kfiq1vk6"]
+
+[ext_resource type="Script" uid="uid://dktqvwmfpagc5" path="res://data_objects/CardData.gd" id="1_lbvba"]
+
+[resource]
+script = ExtResource("1_lbvba")
+name = "Belltower"
+cost = 4
+textureName = "Cathedral"
+type = "royal"
+metadata/_custom_type_script = "uid://dktqvwmfpagc5"
