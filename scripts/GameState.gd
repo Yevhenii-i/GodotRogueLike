@@ -25,18 +25,21 @@ var action_stats: Dictionary = {
 	}
 }
 
+var turn_order: Array[int] = [
+	CHARACTERS.FIRST,
+	CHARACTERS.SECOND,
+	CHARACTERS.THIRD
+]
+
 var deck: Deck
-var assigned_characters: Array
+var assigned_characters: Dictionary # character: participant_id
 
-
-var round: int
+var game_round: int
 var active_character: int = 0
-var available_actions: Dictionary
+var available_actions: Dictionary #action: amount
 
-
-var battle_participant1: BattleParticipant
-var battle_participant2: BattleParticipant
-var battle_participants: Dictionary
+var battle_participants_type: Array[int]
+var battle_participants: Array[BattleParticipant]
 
 
 func clear_action_availability():
@@ -46,11 +49,65 @@ func clear_action_availability():
 func remove_action_availability(action: int):
 	available_actions.erase(action)
 
+
 func reduce_action_availability(action:int, amount:int):
+	if not available_actions.has(action):
+		return
+	
 	available_actions[action] -= amount
-	if available_actions[action] == 0:
+	
+	if available_actions[action] <= 0:
 		remove_action_availability(action)
 
 
-func get_participant(id: int) -> BattleParticipant:
-	return battle_participants[id]
+func get_actions_for_character(character: int) -> Dictionary:
+	return action_stats[character].duplicate()
+
+
+func get_participant(participant_id: int) -> BattleParticipant:
+	return battle_participants[participant_id]
+
+
+func update_participant(participant_id: int):
+	battle_participants[participant_id].update()
+	pass
+
+
+func assign_characters():
+	var characters = CHARACTERS.values().duplicate()
+	characters.shuffle()
+	
+	assigned_characters.clear()
+	
+	assigned_characters = {characters[0]: 0, characters[1]: 1}
+
+
+func get_active_participant_index() -> int:
+	return assigned_characters.get(active_character, -1)
+	
+
+func can_play_card(participant_id: int, card_id: int) -> bool:
+	if not available_actions.has(ACTIONS.PLAY_CARD):
+		return false
+	
+	var participant = get_participant(participant_id)
+	var runtime_card = participant.hand.get(card_id) #var card_data = participant.hand.get(card_id)
+	if runtime_card == null:
+		return false
+	
+	return runtime_card.current_cost <= participant.gold
+
+
+func calculate_scores():
+	for participant in battle_participants:
+		participant.calculate_score()
+	
+
+
+func is_game_over() -> bool:
+	if game_round >= 25:
+		return true
+	for participant in battle_participants:
+		if participant.active_cards.size() == 8:
+			return true
+	return false

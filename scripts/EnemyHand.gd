@@ -11,13 +11,23 @@ var hand: Array[Card] = []
 @onready var card_scn : PackedScene = preload("res://scenes/Card.tscn")
 
 func add_card():
-	var hand_card = card_scn.instantiate()
-	hand.push_back(hand_card)
-	add_child(hand_card)
-	var card_data = CardData.new()
-	card_data.name = "Unknown"
+	var card_node = card_scn.instantiate()
 	
-	hand_card.load_card_data(card_data)
+	var card_data = CardData.new()
+	
+	card_data.name = "Unknown"
+	card_data.cost = 0
+	card_data.additionalInfo = ""
+	card_data.textureName = ""
+	card_data.type = ""
+	var runtime_card = RuntimeCard.new()
+	runtime_card.data = card_data
+	runtime_card.current_cost = 0
+	runtime_card.current_value = 0
+	card_node.setup(0, runtime_card)
+	
+	hand.push_back(card_node)
+	add_child(card_node)
 	
 	position_cards()
 
@@ -25,16 +35,16 @@ func position_cards():
 	var card_spread = min(hand_width / (hand.size() + 1), max_card_distance)
 	var current_position = -(card_spread * (hand.size() - 1))/2
 	for card in hand :
-		_update_card_transform(card, current_position)
+		card.set_position(Vector2(current_position, y_pos)) #_update_card_transform(card, current_position)
 		current_position += card_spread
 
-func _update_card_transform(card: Card, current_position: int):
-	card.set_position(Vector2(current_position, y_pos))
+#func _update_card_transform(card: Card, current_position: int):
+#	card.set_position(Vector2(current_position, y_pos))
 
 
-func remove_card(index: int):
-	var removing_card = hand[index]
-	hand.remove_at(index)
+func remove_card():
+	var removing_card = hand[-1]
+	hand.remove_at(-1)
 	remove_child(removing_card)
 	position_cards()
 

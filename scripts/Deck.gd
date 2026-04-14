@@ -17,9 +17,13 @@ func add_card(card_data: CardData):
 	card_id += 1
 	deck_cards_data[card_id] = card_data
 
-func get_random_card() -> CardData:
+func get_random_card() -> RuntimeCard: #CardData:
 	var random_key = deck_cards_data.keys().pick_random()
-	return deck_cards_data[random_key]
+	var runtime_card = RuntimeCard.new()
+	runtime_card.data = deck_cards_data[random_key]
+	runtime_card.current_cost = runtime_card.data.cost
+	runtime_card.current_value = runtime_card.data.cost
+	return runtime_card
 
 
 func remove_card():

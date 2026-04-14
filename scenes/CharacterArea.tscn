@@ -1,3 +1,36 @@
 [gd_scene format=3 uid="uid://bplgbrv5lv53c"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ulikq"]
+size = Vector2(100, 600)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ulikq"]
+font_size = 32
+
 [node name="CharacterArea" type="Node2D" unique_id=1680390185]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1491892330]
+shape = SubResource("RectangleShape2D_ulikq")
+
+[node name="FIRST" type="Label" parent="." unique_id=270080781]
+offset_left = -35.0
+offset_top = -276.0
+offset_right = 33.0
+offset_bottom = -231.0
+text = "First"
+label_settings = SubResource("LabelSettings_ulikq")
+
+[node name="SECOND" type="Label" parent="." unique_id=684073981]
+offset_left = -63.0
+offset_top = -125.0
+offset_right = 66.0
+offset_bottom = -80.0
+text = "SECOND"
+label_settings = SubResource("LabelSettings_ulikq")
+
+[node name="THIRD" type="Label" parent="." unique_id=1004191761]
+offset_left = -48.0
+offset_top = 58.0
+offset_right = 50.0
+offset_bottom = 103.0
+text = "THIRD"
+label_settings = SubResource("LabelSettings_ulikq")

@@ -5,11 +5,16 @@ enum ACTIONS { PLAY_CARD = 1, GET_GOLD = 2, GET_CARD = 3, END_TURN = 10 }
 signal do_action(action: GameAction)
 
 @onready var playerArea = $PlayerTownArea
+@onready var enemyArea = $EnemyTownArea
 @onready var playerHand = $PlayerHand
+@onready var enemyHand = $EnemyHand
 @onready var playerMoneyLabel = $PlayerMoney/MoneyAmount
+@onready var enemyMoneyLabel = $EnemyMoney/MoneyAmount
 @onready var moneyButton = $MoneyButton
 @onready var deckButton = $DeckButton
 @onready var endTurnButton = $EndTurnButton
+@onready var gameRoundLabel = $GameRoundLabel
+@onready var characters = [$CharacterArea/FIRST, $CharacterArea/SECOND, $CharacterArea/THIRD]
 
 var player_id: int = 0
 var available_actions: Dictionary = {}
@@ -17,61 +22,71 @@ var available_actions: Dictionary = {}
 
 func set_availability(state: GameState):
 	available_actions = state.available_actions
-	if available_actions.get(ACTIONS.GET_GOLD):
-		moneyButton.disabled = false
-	else:
-		moneyButton.disabled = true
-	
-	if available_actions.get(ACTIONS.GET_CARD):
-		deckButton.disabled = false
-	else:
-		deckButton.disabled = true
-	
-	if available_actions.get(ACTIONS.END_TURN):
-		endTurnButton.disabled = false
-	else:
-		endTurnButton.disabled = true
+	moneyButton.disabled = !available_actions.has(ACTIONS.GET_GOLD)
+	deckButton.disabled = !available_actions.has(ACTIONS.GET_CARD)
+	endTurnButton.disabled = !available_actions.has(ACTIONS.END_TURN)
 
 	
 	var player = state.battle_participants[player_id]
 	if !player.hand.is_empty():
-		if available_actions.get(ACTIONS.PLAY_CARD):
-			for card_id in player.hand.keys():
-				var card = playerHand.hand[card_id]
-				if card.cardCost <= player.get_gold():
-					card.playability = true
-				else:
-					card.playability = false
-		else:
-			for card_id in player.hand.keys():
-				var card = playerHand.hand[card_id]
-				card.playability = false
+		for card_id in player.hand.keys():
+			var card = playerHand.hand[card_id]
+			card.set_playable(state.can_play_card(player_id, card_id))
+
 
 
 
 func update_graphics(state: GameState):
-	playerMoneyLabel.set_text(str(state.battle_participant1.get_gold()))
+	for character_id in characters.size():
+		if state.active_character == character_id+1:
+			characters[character_id].set_visible(true)
+		else:
+			characters[character_id].set_visible(false)
+	gameRoundLabel.set_text(str(state.game_round))
 	
-	for i in state.battle_participant1.hand_changes[BattleParticipant.CHANGES_TYPES.ADDED]:
-		playerHand.add_card(i, state.battle_participant1.hand[i])
-	state.battle_participant1.hand_changes[BattleParticipant.CHANGES_TYPES.ADDED] = []
+	playerMoneyLabel.set_text(str(state.battle_participants[0].get_gold()))
 	
-	for i in state.battle_participant1.area_changes[BattleParticipant.CHANGES_TYPES.ADDED]:
-		playerArea.add_card(i)
-	state.battle_participant1.area_changes[BattleParticipant.CHANGES_TYPES.ADDED] = []
+	var player = state.battle_participants[player_id]
+	var hand_changes = player.consume_hand_changes()
+	for card_id in hand_changes[BattleParticipant.CHANGES_TYPES.ADDED]:
+		playerHand.add_card(card_id, player.hand[card_id])
+	for card_id in hand_changes[BattleParticipant.CHANGES_TYPES.REMOVED]:
+		playerHand.remove_card(card_id)
+	
+	var area_changes = player.consume_area_changes()
+	for card_id in area_changes[BattleParticipant.CHANGES_TYPES.ADDED]:
+		playerArea.add_card(card_id, player.active_cards[card_id])
+	for card_id in area_changes[BattleParticipant.CHANGES_TYPES.REMOVED]:
+		playerArea.remove_card(card_id)
+	
+	#переставити все знизу в цикл, дублювання
+	enemyMoneyLabel.set_text(str(state.battle_participants[1].get_gold()))
+	
+	var enemy = state.battle_participants[1]
+	hand_changes = enemy.consume_hand_changes()
+	for card_id in hand_changes[BattleParticipant.CHANGES_TYPES.ADDED]:
+		enemyHand.add_card()
+	for card_id in hand_changes[BattleParticipant.CHANGES_TYPES.REMOVED]:
+		enemyHand.remove_card()
+	
+	area_changes = enemy.consume_area_changes()
+	for card_id in area_changes[BattleParticipant.CHANGES_TYPES.ADDED]:
+		enemyArea.add_card(card_id, enemy.active_cards[card_id])
+	for card_id in area_changes[BattleParticipant.CHANGES_TYPES.REMOVED]:
+		enemyArea.remove_card(card_id)
 
 
-func update(state: GameState):
+func update_state(state: GameState):
 	update_graphics(state)
 	set_availability(state)
 
 
-func _on_player_hand_card_activate(card_id: int, card: Card) -> void:
+func _on_player_hand_card_activate(card_id: int) -> void:
 	var action = PlayCardAction.new()
 	action.participant_id = player_id
 	action.card_id = card_id
-	action.card = card
 	do_action.emit(action)
+
 
 func _on_deck_button_pressed() -> void:
 	var action = GetCardsAction.new()

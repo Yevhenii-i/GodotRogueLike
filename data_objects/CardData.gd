@@ -6,4 +6,3 @@ class_name CardData extends Resource
 @export var textureName: String
 @export var type: String
 #@export var effects: Dictionary
-#@export var actions: Array[GDScript] = []

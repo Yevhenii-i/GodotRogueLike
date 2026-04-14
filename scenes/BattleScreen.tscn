@@ -12,6 +12,10 @@
 [ext_resource type="Texture2D" uid="uid://bvdsvsqvj6fiw" path="res://sprites/background.png" id="10_rrw1x"]
 [ext_resource type="PackedScene" uid="uid://dcvj48q4s441q" path="res://scenes/PlayerGold.tscn" id="11_eoump"]
 [ext_resource type="PackedScene" uid="uid://bd8sk38nm8uof" path="res://scenes/EnemyHand.tscn" id="12_1fnen"]
+[ext_resource type="PackedScene" uid="uid://bplgbrv5lv53c" path="res://scenes/CharacterArea.tscn" id="13_soxni"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_soxni"]
+font_size = 48
 
 [node name="BattleScreen" type="Node2D" unique_id=1634930398]
 script = ExtResource("1_eoump")
@@ -65,9 +69,30 @@ offset_right = 993.0
 offset_bottom = 775.0
 text = "End Turn"
 
+[node name="EnemyMoney" parent="." unique_id=1198094295 instance=ExtResource("11_eoump")]
+position = Vector2(56, 71)
+
+[node name="MoneyAmount" parent="EnemyMoney" index="0" unique_id=654588070]
+text = "0"
+
+[node name="EnemyTownArea" parent="." unique_id=193257143 instance=ExtResource("3_e26j6")]
+position = Vector2(1371, 540)
+
+[node name="CharacterArea" parent="." unique_id=1680390185 instance=ExtResource("13_soxni")]
+position = Vector2(1855, 540)
+
+[node name="GameRoundLabel" type="Label" parent="." unique_id=1954072463]
+offset_left = 7.0
+offset_top = 497.0
+offset_right = 47.0
+offset_bottom = 564.0
+text = "0"
+label_settings = SubResource("LabelSettings_soxni")
+
 [connection signal="card_activate" from="PlayerHand" to="." method="_on_player_hand_card_activate"]
 [connection signal="pressed" from="DeckButton" to="." method="_on_deck_button_pressed"]
 [connection signal="pressed" from="MoneyButton" to="." method="_on_money_button_pressed"]
 [connection signal="pressed" from="EndTurnButton" to="." method="_on_end_turn_button_pressed"]
 
 [editable path="PlayerMoney"]
+[editable path="EnemyMoney"]
