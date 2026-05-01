@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_lbvba")
+id = 1
 name = "Belltower"
 cost = 4
 textureName = "Cathedral"

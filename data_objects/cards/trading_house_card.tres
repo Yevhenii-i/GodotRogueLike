@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_1frxf")
+id = 4
 name = "Trading House"
 cost = 2
 textureName = "House"

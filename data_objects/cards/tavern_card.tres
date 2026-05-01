@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_g0m8k")
+id = 3
 name = "Tavern"
 cost = 3
 textureName = "Tavern"

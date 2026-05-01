@@ -11,6 +11,8 @@ enum PARTICIPANTS { PLAYER = 1, AI = 2}
 var managers: Array
 var state: GameState
 
+var match_history: Array = []
+
 @onready var battle_screen : String = "res://scenes/BattleScreen.tscn"
 
 
@@ -62,6 +64,7 @@ func run_battle_loop():
 				print("Character %s skipped." % character)
 		state.calculate_scores()
 	print(state.game_round)
+	print("Game ended!")
 
 
 func run_character_turn(active_index: int):
@@ -80,5 +83,16 @@ func run_character_turn(active_index: int):
 
 
 func _on_manager_action(action: GameAction):
+	var state_snapshot = state.to_dict(action.participant_id) 
+	var action_record = action.to_dict(state)
+	
 	action.execute(state)
+	
+	match_history.append({
+		"round": state.game_round,
+		"active_actor": action.participant_id,
+		"state_before": state_snapshot,
+		"action_taken": action_record
+	})
+	
 	state_changed.emit()

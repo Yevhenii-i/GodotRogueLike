@@ -1,5 +1,6 @@
 class_name CardData extends Resource
 
+@export var id: int
 @export var name: String
 @export var additionalInfo: String
 @export var cost: int

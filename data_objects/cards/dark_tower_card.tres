@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_6lhfy")
+id = 2
 name = "Dark Tower"
 additionalInfo = "If is a part of a city, +3 points"
 cost = 5

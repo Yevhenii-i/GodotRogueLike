@@ -98,10 +98,17 @@ func can_play_card(participant_id: int, card_id: int) -> bool:
 	return runtime_card.current_cost <= participant.gold
 
 
+func get_card_data_id(participant_id: int, card_id: int):
+	var participant = get_participant(participant_id)
+	var runtime_card = participant.hand.get(card_id)
+	if runtime_card == null:
+		return false
+	return runtime_card.data.id
+
+
 func calculate_scores():
 	for participant in battle_participants:
 		participant.calculate_score()
-	
 
 
 func is_game_over() -> bool:
@@ -111,3 +118,20 @@ func is_game_over() -> bool:
 		if participant.active_cards.size() == 8:
 			return true
 	return false
+
+
+func to_dict(active_index: int):
+	return {
+		"round": self.game_round,
+		"active_character": self.active_character,
+		"actions_remaining": self.available_actions.size(), #replace with a function to return actual number
+		"self_gold": self.battle_participants[active_index].get_gold(),
+		"self_score": self.battle_participants[active_index].score,
+		"self_hand_size": self.battle_participants[active_index].hand.size(),
+		"self_board_count": self.battle_participants[active_index].active_cards.size(),
+		"opponent_score": self.battle_participants[1 - active_index].score,
+		"opponent_hand_size": self.battle_participants[1 - active_index].hand.size(),
+		"opponent_board_count": self.battle_participants[1 - active_index].active_cards.size(),
+		"playable_hand_cards": [], #replace with a function
+		"available_actions": self.available_actions.duplicate(true)
+	}
