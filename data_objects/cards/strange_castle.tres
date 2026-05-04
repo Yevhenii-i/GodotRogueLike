@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3 uid="uid://bbr0ynsnwe32i"]
+
+[ext_resource type="Script" uid="uid://dktqvwmfpagc5" path="res://data_objects/CardData.gd" id="1_udpq8"]
+
+[resource]
+script = ExtResource("1_udpq8")
+id = 5
+name = "Strange Castle"
+additionalInfo = "If not all building types, +6 points"
+cost = 5
+textureName = "Strange Castle"
+type = "unique"
+effects = {
+"not_full_card_types": 6
+}
+metadata/_custom_type_script = "uid://dktqvwmfpagc5"

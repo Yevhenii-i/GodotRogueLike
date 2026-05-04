@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3 uid="uid://c0tfirp5bscbv"]
+
+[ext_resource type="Script" uid="uid://dktqvwmfpagc5" path="res://data_objects/CardData.gd" id="1_t54y4"]
+
+[resource]
+script = ExtResource("1_t54y4")
+id = 6
+name = "Ominous Building"
+additionalInfo = "If only active unique card, +12 points"
+cost = 6
+textureName = "Monster Town"
+type = "unique"
+effects = {
+"only_unique_card": 12
+}
+metadata/_custom_type_script = "uid://dktqvwmfpagc5"

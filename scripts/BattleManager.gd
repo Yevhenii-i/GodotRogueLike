@@ -11,13 +11,17 @@ enum PARTICIPANTS { PLAYER = 1, AI = 2}
 var managers: Array
 var state: GameState
 
-var match_history: Array = []
+var game_logger: GameLogger
+var game_history: Array = []
+var game_result: Dictionary
 
 @onready var battle_screen : String = "res://scenes/BattleScreen.tscn"
 
 
 func _ready() -> void:
 	state = GameState.new()
+	game_logger = GameLogger.new()
+	add_child(game_logger)
 	var battle_participant1 = BattleParticipant.new() 
 	var battle_participant2 = BattleParticipant.new() 
 	state.battle_participants = [battle_participant1, battle_participant2]
@@ -65,6 +69,9 @@ func run_battle_loop():
 		state.calculate_scores()
 	print(state.game_round)
 	print("Game ended!")
+	game_result = state.get_game_result()
+	#api_communicator.upload_game_data(game_history, game_result)
+	game_logger.save_game(game_history, game_result)
 
 
 func run_character_turn(active_index: int):
@@ -78,21 +85,20 @@ func run_character_turn(active_index: int):
 			managers[0].update_graphics(state) #Тимчасово!!!!! замінити це, напевно
 		#else:
 			
-			
-		
+
 
 
 func _on_manager_action(action: GameAction):
 	var state_snapshot = state.to_dict(action.participant_id) 
-	var action_record = action.to_dict(state)
+	var action_record = action.to_dict(state) #rewrite .to_dict() to return just a String
 	
 	action.execute(state)
 	
-	match_history.append({
+	game_history.append({
 		"round": state.game_round,
 		"active_actor": action.participant_id,
 		"state_before": state_snapshot,
-		"action_taken": action_record
+		"action_taken": action_record 
 	})
 	
 	state_changed.emit()

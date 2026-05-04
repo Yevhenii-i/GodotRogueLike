@@ -6,7 +6,14 @@ var card_id = 0
 load("res://data_objects/cards/belltower_card.tres"), 
 load("res://data_objects/cards/dark_tower_card.tres"), 
 load("res://data_objects/cards/tavern_card.tres"), 
-load("res://data_objects/cards/trading_house_card.tres")]
+load("res://data_objects/cards/trading_house_card.tres"),
+load("res://data_objects/cards/training_camp.tres"),
+load("res://data_objects/cards/mine.tres"),
+load("res://data_objects/cards/castle_wall.tres"),
+load("res://data_objects/cards/watch_tower.tres"),
+load("res://data_objects/cards/ominous_building.tres"),
+load("res://data_objects/cards/strange_castle.tres"),
+load("res://data_objects/cards/dark_tower_card.tres")]
 
 func create_deck():
 	for i in cards_data:

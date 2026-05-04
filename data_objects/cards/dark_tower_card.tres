@@ -6,8 +6,11 @@
 script = ExtResource("1_6lhfy")
 id = 2
 name = "Dark Tower"
-additionalInfo = "If is a part of a city, +3 points"
+additionalInfo = "If all building types active, +4 points"
 cost = 5
 textureName = "Dark Tower"
 type = "unique"
+effects = {
+"full_card_types": 5
+}
 metadata/_custom_type_script = "uid://dktqvwmfpagc5"

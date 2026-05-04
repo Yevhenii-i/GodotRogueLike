@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://ytg345mlnmgy"]
+
+[ext_resource type="Script" uid="uid://cjy46aetxdjpn" path="res://scripts/MainMenu.gd" id="1_0ykhv"]
+[ext_resource type="Texture2D" uid="uid://bvdsvsqvj6fiw" path="res://sprites/background.png" id="1_yqorp"]
+
+[node name="MainMenu" type="Control" unique_id=1600530419]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0ykhv")
+
+[node name="Background" type="Sprite2D" parent="." unique_id=1667287458]
+z_index = -1
+position = Vector2(962.2222, 541)
+scale = Vector2(0.998148, 0.99814814)
+texture = ExtResource("1_yqorp")
+
+[node name="PlayButton" type="Button" parent="." unique_id=572908828]
+layout_mode = 0
+offset_left = 640.0
+offset_top = 423.0
+offset_right = 721.0
+offset_bottom = 454.0
+scale = Vector2(3, 3)
+text = "Play vs AI"
+
+[node name="UploadButton" type="Button" parent="." unique_id=1032821193]
+layout_mode = 0
+offset_left = 722.0
+offset_top = 596.0
+offset_right = 876.0
+offset_bottom = 627.0
+scale = Vector2(3, 3)
+text = "Upload Game Data"
+
+[node name="SimulateButton" type="Button" parent="." unique_id=1310818992]
+layout_mode = 0
+offset_left = 954.00006
+offset_top = 422.0
+offset_right = 1088.0
+offset_bottom = 453.0
+scale = Vector2(3, 3)
+text = "Simulate Games"
+
+[connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="UploadButton" to="." method="_on_upload_button_pressed"]
