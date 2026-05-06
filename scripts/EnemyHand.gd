@@ -46,6 +46,7 @@ func remove_card():
 	var removing_card = hand[-1]
 	hand.remove_at(-1)
 	remove_child(removing_card)
+	removing_card.queue_free()
 	position_cards()
 
 

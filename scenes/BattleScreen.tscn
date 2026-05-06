@@ -17,6 +17,9 @@
 [sub_resource type="LabelSettings" id="LabelSettings_soxni"]
 font_size = 48
 
+[sub_resource type="LabelSettings" id="LabelSettings_06l4j"]
+font_size = 60
+
 [node name="BattleScreen" type="Node2D" unique_id=1634930398]
 script = ExtResource("1_eoump")
 
@@ -89,10 +92,44 @@ offset_bottom = 564.0
 text = "0"
 label_settings = SubResource("LabelSettings_soxni")
 
+[node name="GameResults" type="Control" parent="." unique_id=419754598]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 760.0
+offset_top = 190.0
+offset_right = 1160.0
+offset_bottom = 890.0
+
+[node name="GameResultLabel" type="Label" parent="GameResults" unique_id=1909543207]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 100.0
+grow_horizontal = 2
+label_settings = SubResource("LabelSettings_06l4j")
+horizontal_alignment = 1
+
+[node name="ReturnToMainMenuButton" type="Button" parent="GameResults" unique_id=601550797]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Return to Main Menu"
+
 [connection signal="card_activate" from="PlayerHand" to="." method="_on_player_hand_card_activate"]
 [connection signal="pressed" from="DeckButton" to="." method="_on_deck_button_pressed"]
 [connection signal="pressed" from="MoneyButton" to="." method="_on_money_button_pressed"]
 [connection signal="pressed" from="EndTurnButton" to="." method="_on_end_turn_button_pressed"]
+[connection signal="pressed" from="GameResults/ReturnToMainMenuButton" to="." method="_on_return_to_main_menu_button_pressed"]
 
 [editable path="PlayerMoney"]
 [editable path="EnemyMoney"]

@@ -25,7 +25,7 @@ func update_state(state: GameState):
 			return
 	
 	if state.active_character == state.CHARACTERS.SECOND:
-		if participant.get_gold() < 8 and available_actions.has(ACTIONS.GET_GOLD):
+		if (participant.get_gold() < 8 or participant.get_gold() <= 2*participant.hand.size()) and available_actions.has(ACTIONS.GET_GOLD):
 			get_gold_action()
 			return
 		elif available_actions.has(ACTIONS.GET_CARD):
@@ -34,7 +34,7 @@ func update_state(state: GameState):
 		
 	
 	if state.active_character == state.CHARACTERS.THIRD:
-		if participant.hand.size() > 5 and available_actions.has(ACTIONS.GET_CARD):
+		if (participant.hand.size() < 5 or participant.get_gold() >= 2*participant.hand.size()) and available_actions.has(ACTIONS.GET_CARD):
 			get_card_action()
 			return
 		elif available_actions.has(ACTIONS.GET_GOLD):
@@ -43,12 +43,33 @@ func update_state(state: GameState):
 	
 	
 	if !participant.hand.is_empty():
-		for card_id in participant.hand.keys():
-			if !available_actions.has(ACTIONS.PLAY_CARD):
-				continue
-			if state.can_play_card(participant_id, card_id):
-				activate_card_action(card_id)
-				return
+		if available_actions.has(ACTIONS.PLAY_CARD):
+			var evaluated_cards = participant.get_cards_for_prediction(11)
+			var unique_cards = evaluated_cards["playable_cards"] + evaluated_cards["unplayable_cards"]
+			
+			var card_to_play = [-999, 999, -999]
+			
+			for card in unique_cards:
+				var summary_value = card["current_value"]+card["potential_value"]
+				if card["current_value"] > 0:
+					if summary_value > card_to_play[2]:
+						card_to_play = [card["card_id"], card["current_cost"], summary_value]
+					elif summary_value == card_to_play[2] and card["current_cost"] < card_to_play[1]:
+						card_to_play = [card["card_id"], card["current_cost"], summary_value]
+			
+			if evaluated_cards["playable_cards"].map(func(card_record): return card_record["card_id"]).has(card_to_play[0]):
+				var hand_card_values_id = participant.hand.values().find_custom(func(runtime_card): return runtime_card.get_id() == card_to_play[0])
+				
+				if hand_card_values_id != null:
+					var hand_card_id = participant.hand.find_key(participant.hand.values()[hand_card_values_id])
+					activate_card_action(hand_card_id)
+					return
+				
+			
+			#for card_id in participant.hand.keys():
+			#	if state.can_play_card(participant_id, card_id):
+			#		activate_card_action(card_id)
+			#		return
 	
 	end_turn_action()
 	return

@@ -12,8 +12,7 @@ load("res://data_objects/cards/mine.tres"),
 load("res://data_objects/cards/castle_wall.tres"),
 load("res://data_objects/cards/watch_tower.tres"),
 load("res://data_objects/cards/ominous_building.tres"),
-load("res://data_objects/cards/strange_castle.tres"),
-load("res://data_objects/cards/dark_tower_card.tres")]
+load("res://data_objects/cards/strange_castle.tres")]
 
 func create_deck():
 	for i in cards_data:

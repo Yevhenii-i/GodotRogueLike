@@ -10,6 +10,8 @@ func clear_display():
 	for child in card_area.get_children():
 		child.remove_child(child.card_node)
 		card_area.remove_child(child)
+		child.card_node.queue_free()
+		child.queue_free()
 
 
 func refresh_display():

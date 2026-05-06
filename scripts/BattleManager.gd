@@ -1,12 +1,13 @@
 class_name BattleManager extends Node
 
+signal game_ended()
 signal state_changed()
 
 enum ACTIONS { PLAY_CARD = 1, GET_GOLD = 2, GET_CARD = 3, END_TURN = 10 }
 enum PARTICIPANTS { PLAYER = 1, AI = 2}
 
-@export var battle_participant1_type: int = PARTICIPANTS.PLAYER
-@export var battle_participant2_type: int = PARTICIPANTS.AI
+var battle_participant1_type: int# = PARTICIPANTS.PLAYER
+var battle_participant2_type: int# = PARTICIPANTS.AI
 
 var managers: Array
 var state: GameState
@@ -19,9 +20,16 @@ var game_result: Dictionary
 
 
 func _ready() -> void:
+	pass
+
+func start_game(bp1_type: int, bp2_type: int):
+	
 	state = GameState.new()
 	game_logger = GameLogger.new()
 	add_child(game_logger)
+	battle_participant1_type = bp1_type
+	battle_participant2_type = bp2_type
+	
 	var battle_participant1 = BattleParticipant.new() 
 	var battle_participant2 = BattleParticipant.new() 
 	state.battle_participants = [battle_participant1, battle_participant2]
@@ -33,8 +41,14 @@ func _ready() -> void:
 	
 	managers.append(create_manager(battle_participant1_type))
 	managers.append(create_manager(battle_participant2_type))
-
-	managers[0].update_state(state) #if manager is UI. Later it is to change 
+	
+	managers[0].participant_id = 0
+	managers[1].participant_id = 1
+	
+	if battle_participant1_type == PARTICIPANTS.PLAYER:
+		managers[0].update_state(state)
+	elif battle_participant2_type == PARTICIPANTS.PLAYER:
+		managers[1].update_state(state)
 	
 	state.active_character = state.CHARACTERS.FIRST
 	
@@ -46,8 +60,9 @@ func create_manager(type: int):
 		var manager = load(battle_screen).instantiate()
 		add_child(manager)
 		manager.do_action.connect(_on_manager_action)
+		manager.end_game.connect(_on_game_ended)
 		return manager
-	else:
+	elif type == PARTICIPANTS.AI:
 		var manager = EvaluationAIManager.new()
 		add_child(manager)
 		manager.do_action.connect(_on_manager_action)
@@ -64,14 +79,25 @@ func run_battle_loop():
 			if active_index != -1:
 				state.available_actions = state.get_actions_for_character(character)
 				await run_character_turn(active_index)
-			else:
-				print("Character %s skipped." % character)
-		state.calculate_scores()
+				#print_orphan_nodes()
+			#else:
+				#print("Character %s skipped." % character)
+		#state.calculate_scores()
 	print(state.game_round)
 	print("Game ended!")
+	
 	game_result = state.get_game_result()
 	#api_communicator.upload_game_data(game_history, game_result)
 	game_logger.save_game(game_history, game_result)
+	
+	if battle_participant1_type == PARTICIPANTS.PLAYER:
+		managers[0].init_end_game(game_result["winner"])
+		await managers[0].end_game
+	elif battle_participant2_type == PARTICIPANTS.PLAYER:
+		managers[1].init_end_game(game_result["winner"])
+		await managers[0].end_game
+	else:
+		game_ended.emit()
 
 
 func run_character_turn(active_index: int):
@@ -84,13 +110,16 @@ func run_character_turn(active_index: int):
 		if !state.battle_participants_type[active_index] == PARTICIPANTS.PLAYER and state.battle_participants_type[0] == PARTICIPANTS.PLAYER:
 			managers[0].update_graphics(state) #Тимчасово!!!!! замінити це, напевно
 		#else:
-			
+		state.battle_participants[active_index].calculate_score()
 
+
+func _on_game_ended():
+	game_ended.emit()
 
 
 func _on_manager_action(action: GameAction):
 	var state_snapshot = state.to_dict(action.participant_id) 
-	var action_record = action.to_dict(state) #rewrite .to_dict() to return just a String
+	var action_record = action.to_str(state) #rewrite .to_dict() to return just a String
 	
 	action.execute(state)
 	

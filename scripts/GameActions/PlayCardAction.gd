@@ -11,9 +11,6 @@ func execute(state: GameState):
 	
 	state.reduce_action_availability(state.ACTIONS.PLAY_CARD, 1)
 
-func to_dict(state: GameState) -> Dictionary:
+func to_str(state: GameState) -> String:
 	var card_data_id = state.get_card_data_id(participant_id, card_id)
-	return {
-		"type": "play_card",
-		"card_data_id": card_data_id
-	}
+	return "play_card_" + str(card_data_id)

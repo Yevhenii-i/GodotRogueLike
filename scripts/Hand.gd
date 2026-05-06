@@ -20,7 +20,6 @@ func add_card(card_id: int, runtime_card: RuntimeCard): # card_data: CardData):
 	
 	hand[card_id] = card_node
 	add_child(card_node)
-	
 	card_node.mouse_entered.connect(_handle_card_hover)
 	card_node.mouse_exited.connect(_handle_card_unhover)
 

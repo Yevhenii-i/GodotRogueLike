@@ -3,6 +3,7 @@ class_name UIManager extends Node
 enum ACTIONS { PLAY_CARD = 1, GET_GOLD = 2, GET_CARD = 3, END_TURN = 10 }
 
 signal do_action(action: GameAction)
+signal end_game()
 
 @onready var playerArea = $PlayerTownArea
 @onready var enemyArea = $EnemyTownArea
@@ -15,8 +16,11 @@ signal do_action(action: GameAction)
 @onready var endTurnButton = $EndTurnButton
 @onready var gameRoundLabel = $GameRoundLabel
 @onready var characters = [$CharacterArea/FIRST, $CharacterArea/SECOND, $CharacterArea/THIRD]
+@onready var gameResults = $GameResults
+@onready var gameResultsLabel = $GameResults/GameResultLabel
+@onready var returnButton = $GameResults/ReturnToMainMenuButton
 
-var player_id: int = 0
+var participant_id: int = 0
 var available_actions: Dictionary = {}
 
 
@@ -27,11 +31,11 @@ func set_availability(state: GameState):
 	endTurnButton.disabled = !available_actions.has(ACTIONS.END_TURN)
 
 	
-	var player = state.battle_participants[player_id]
+	var player = state.battle_participants[participant_id]
 	if !player.hand.is_empty():
 		for card_id in player.hand.keys():
 			var card = playerHand.hand[card_id]
-			card.set_playable(state.can_play_card(player_id, card_id))
+			card.set_playable(state.can_play_card(participant_id, card_id))
 
 
 
@@ -46,7 +50,7 @@ func update_graphics(state: GameState):
 	
 	playerMoneyLabel.set_text(str(state.battle_participants[0].get_gold()))
 	
-	var player = state.battle_participants[player_id]
+	var player = state.battle_participants[participant_id]
 	var hand_changes = player.consume_hand_changes()
 	for card_id in hand_changes[BattleParticipant.CHANGES_TYPES.ADDED]:
 		playerHand.add_card(card_id, player.hand[card_id])
@@ -81,28 +85,41 @@ func update_state(state: GameState):
 	set_availability(state)
 
 
+func init_end_game(winner: int):
+	if winner == participant_id:
+		gameResultsLabel.set_text("YOU WON!!!")
+	else: 
+		gameResultsLabel.set_text("YOU LOST...")
+	gameResults.set_visible(true)
+
+
 func _on_player_hand_card_activate(card_id: int) -> void:
 	var action = PlayCardAction.new()
-	action.participant_id = player_id
+	action.participant_id = self.participant_id
 	action.card_id = card_id
 	do_action.emit(action)
 
 
 func _on_deck_button_pressed() -> void:
 	var action = GetCardsAction.new()
-	action.participant_id = player_id
+	action.participant_id = self.participant_id
 	action.cards_amount = available_actions.get(ACTIONS.GET_CARD)
 	do_action.emit(action)
 
 
 func _on_money_button_pressed() -> void:
 	var action = GetGoldAction.new()
-	action.participant_id = player_id
+	action.participant_id = self.participant_id
 	action.gold_amount = available_actions.get(ACTIONS.GET_GOLD)
 	do_action.emit(action)
 
 
 func _on_end_turn_button_pressed() -> void:
 	var action = EndTurnAction.new()
-	action.participant_id = player_id
+	action.participant_id = self.participant_id
 	do_action.emit(action)
+
+
+func _on_return_to_main_menu_button_pressed() -> void:
+	end_game.emit()
+	pass # Replace with function body.

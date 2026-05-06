@@ -40,22 +40,27 @@ func get_gold() -> int:
 
 
 
-func get_cards_for_prediction() -> Dictionary:
+func get_cards_for_prediction(deck_size: int) -> Dictionary:
 	var cards_for_prediction: Dictionary = {
 		"playable_cards": [],
-		"unplayable_cards": []
+		"unplayable_cards": [],
+		"card_counts": []
 	}
+	cards_for_prediction["card_counts"].resize(deck_size)
+	cards_for_prediction["card_counts"].fill(0)
 	
-	var cards_predicted: Dictionary = {} #card_id: Array["key", id in cards_for_predictions Array]
+	
+	#var cards_predicted: Dictionary = {} #card_id: Array["key", id in cards_for_predictions Array]
 	
 	var temp_bonuses = bonuses.duplicate_deep()
 	
 	for card_id in hand.keys():
 		var runtime_card = hand.get(card_id)
 		
-		if cards_predicted.has(runtime_card.data.id):
-			var card_record = cards_for_prediction[cards_predicted[runtime_card.data.id][0]][cards_predicted[runtime_card.data.id][1]].duplicate_deep()
-			cards_for_prediction[cards_predicted[runtime_card.data.id][0]].append(card_record)
+		if cards_for_prediction["card_counts"][runtime_card.data.id] != 0:
+			#var card_record = cards_for_prediction[cards_predicted[runtime_card.data.id][0]][cards_predicted[runtime_card.data.id][1]].duplicate_deep()
+			#cards_for_prediction[cards_predicted[runtime_card.data.id][0]].append(card_record)
+			cards_for_prediction["card_counts"][runtime_card.data.id] += 1
 			continue
 		
 		var card_record = {
@@ -70,7 +75,7 @@ func get_cards_for_prediction() -> Dictionary:
 				temp_bonuses[effect] += runtime_card.data.effects.get(effect)
 			
 			if active_card_types["unique"] == 1:
-				card_record["potential_value"] -= bonuses["only_unique_card"]
+				card_record["current_value"] -= bonuses["only_unique_card"]
 			elif active_card_types["unique"] == 0:
 				card_record["potential_value"] += temp_bonuses["only_unique_card"]
 		
@@ -105,10 +110,11 @@ func get_cards_for_prediction() -> Dictionary:
 		
 		if runtime_card.current_cost <= gold:
 			cards_for_prediction["playable_cards"].append(card_record)
-			cards_predicted.set(runtime_card.data.id, ["playable_cards", cards_for_prediction["playable_cards"].size()-1])
+			#cards_predicted.set(runtime_card.data.id, ["playable_cards", cards_for_prediction["playable_cards"].size()-1])
 		else:
 			cards_for_prediction["unplayable_cards"].append(card_record)
-			cards_predicted.set(runtime_card.data.id, ["unplayable_cards", cards_for_prediction["unplayable_cards"].size()-1])
+			#cards_predicted.set(runtime_card.data.id, ["unplayable_cards", cards_for_prediction["unplayable_cards"].size()-1])
+		cards_for_prediction["card_counts"][runtime_card.data.id]+=1
 	
 	
 	return cards_for_prediction
@@ -150,6 +156,7 @@ func play_card(card_id: int):
 		for effect in runtime_card.data.effects.keys():
 			bonuses[effect] += runtime_card.data.effects.get(effect)
 	hand.erase(card_id)
+	
 
 
 func calculate_score():

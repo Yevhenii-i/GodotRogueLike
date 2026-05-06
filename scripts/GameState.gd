@@ -120,7 +120,20 @@ func is_game_over() -> bool:
 	return false
 
 
-func get_game_result():
+func get_action_str_array(playable_cards: Array) -> Array:
+	var actions : Array = []
+	if available_actions.has(ACTIONS.PLAY_CARD):
+		for card in playable_cards:
+			actions.append("play_card_" + str(card["card_id"]))
+	if available_actions.has(ACTIONS.GET_GOLD):
+		actions.append("get_gold_" + str(available_actions[ACTIONS.GET_GOLD]))
+	if available_actions.has(ACTIONS.GET_CARD):
+		actions.append("get_card_" + str(available_actions[ACTIONS.GET_CARD]))
+	actions.append("end_turn")
+	return actions
+
+
+func get_game_result() -> Dictionary:
 	var player_score = battle_participants[0].score
 	var enemy_score = battle_participants[1].score
 	var winner = 0 if player_score > enemy_score else 1
@@ -136,7 +149,7 @@ func get_game_result():
 func to_dict(active_index: int) -> Dictionary:
 	var self_index = active_index
 	var opponent_index = 1 if self_index == 0 else 0
-	var cards_for_prediction = self.battle_participants[self_index].get_cards_for_prediction()
+	var cards_for_prediction = self.battle_participants[self_index].get_cards_for_prediction(self.deck.cards_data.size())
 	
 	
 	return {
@@ -145,12 +158,13 @@ func to_dict(active_index: int) -> Dictionary:
 		"self_score": self.battle_participants[self_index].score,
 		"self_hand_size": self.battle_participants[self_index].hand.size(),
 		"self_board_size": self.battle_participants[self_index].active_cards.size(),
+		"opponent_gold": self.battle_participants[opponent_index].get_gold(),
 		"opponent_score": self.battle_participants[opponent_index].score,
 		"opponent_hand_size": self.battle_participants[opponent_index].hand.size(),
 		"opponent_board_size": self.battle_participants[opponent_index].active_cards.size(),
 		"self_active_cards": self.battle_participants[self_index].active_cards.values().map(func(runtime_card): return runtime_card.get_id()),
 		"opponent_active_cards": self.battle_participants[opponent_index].active_cards.values().map(func(runtime_card): return runtime_card.get_id()),
-		"playable_hand_cards": cards_for_prediction["playable_cards"].duplicate_deep(),
-		"unplayable_hand_cards": cards_for_prediction["unplayable_cards"].duplicate_deep(),
-		"available_actions": self.available_actions.duplicate_deep() #replace with Array of action.to_dict()
+		"hand_card_records": cards_for_prediction["card_counts"].duplicate_deep(),
+		"unique_hand_card_records": cards_for_prediction["playable_cards"].duplicate_deep() + cards_for_prediction["unplayable_cards"].duplicate_deep(),
+		"available_actions": self.get_action_str_array(cards_for_prediction.get("playable_cards")) #self.available_actions.duplicate_deep() #replace with Array of action.to_dict()
 	}

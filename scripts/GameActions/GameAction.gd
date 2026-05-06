@@ -5,5 +5,5 @@ var participant_id: int
 func execute(state: GameState) -> void:
 	pass
 
-func to_dict(state: GameState):
+func to_str(state: GameState):
 	pass

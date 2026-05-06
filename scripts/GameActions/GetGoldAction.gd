@@ -9,8 +9,6 @@ func execute(state: GameState):
 	state.remove_action_availability(state.ACTIONS.GET_GOLD)
 	state.remove_action_availability(state.ACTIONS.GET_CARD)
 
-func to_dict(state: GameState) -> Dictionary:
-	return {
-		"type": "get_gold",
-		"gold_amount": self.gold_amount
-	}
+func to_str(state: GameState) -> String:
+	return "get_gold_" + str(self.gold_amount)
+	

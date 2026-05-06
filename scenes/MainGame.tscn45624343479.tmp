@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://c0oonktnxylng"]
+
+[ext_resource type="Script" uid="uid://beskalicr72ws" path="res://scripts/BattleManager.gd" id="1_hat22"]
+
+[node name="MainGame" type="Node2D" unique_id=715811499]
+script = ExtResource("1_hat22")
