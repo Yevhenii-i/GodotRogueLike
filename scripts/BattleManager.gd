@@ -4,7 +4,7 @@ signal game_ended()
 signal state_changed()
 
 enum ACTIONS { PLAY_CARD = 1, GET_GOLD = 2, GET_CARD = 3, END_TURN = 10 }
-enum PARTICIPANTS { PLAYER = 1, AI = 2}
+enum PARTICIPANTS { PLAYER = 1, ALGORYTHM = 2, WEB_AI = 3}
 
 var battle_participant1_type: int# = PARTICIPANTS.PLAYER
 var battle_participant2_type: int# = PARTICIPANTS.AI
@@ -15,6 +15,7 @@ var state: GameState
 var game_logger: GameLogger
 var game_history: Array = []
 var game_result: Dictionary
+var state_snapshot: Dictionary
 
 @onready var battle_screen : String = "res://scenes/BattleScreen.tscn"
 
@@ -62,8 +63,13 @@ func create_manager(type: int):
 		manager.do_action.connect(_on_manager_action)
 		manager.end_game.connect(_on_game_ended)
 		return manager
-	elif type == PARTICIPANTS.AI:
-		var manager = EvaluationAIManager.new()
+	elif type == PARTICIPANTS.ALGORYTHM:
+		var manager = AlgorythmManager.new()
+		add_child(manager)
+		manager.do_action.connect(_on_manager_action)
+		return manager
+	elif type == PARTICIPANTS.WEB_AI:
+		var manager = WebAIManager.new()
 		add_child(manager)
 		manager.do_action.connect(_on_manager_action)
 		return manager
@@ -102,8 +108,12 @@ func run_battle_loop():
 
 func run_character_turn(active_index: int):
 	while !state.available_actions.is_empty():
+		state_snapshot = state.to_dict(active_index) 
+		
 		var active_manager = managers[active_index]
 		active_manager.update_state(state)
+		if state.battle_participants_type[active_index] == PARTICIPANTS.WEB_AI:
+			active_manager.request_move(state_snapshot)
 		
 		if state.battle_participants_type.has(PARTICIPANTS.PLAYER):
 			await state_changed 
@@ -118,7 +128,7 @@ func _on_game_ended():
 
 
 func _on_manager_action(action: GameAction):
-	var state_snapshot = state.to_dict(action.participant_id) 
+	#state_snapshot = state.to_dict(action.participant_id) 
 	var action_record = action.to_str(state) #rewrite .to_dict() to return just a String
 	
 	action.execute(state)

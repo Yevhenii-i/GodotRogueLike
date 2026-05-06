@@ -1,4 +1,4 @@
-class_name UIManager extends Node
+class_name PlayerManager extends Node
 
 enum ACTIONS { PLAY_CARD = 1, GET_GOLD = 2, GET_CARD = 3, END_TURN = 10 }
 

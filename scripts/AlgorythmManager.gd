@@ -1,4 +1,4 @@
-class_name EvaluationAIManager extends Node
+class_name AlgorythmManager extends Node
 
 enum ACTIONS { PLAY_CARD = 1, GET_GOLD = 2, GET_CARD = 3, END_TURN = 10 }
 
@@ -7,6 +7,7 @@ signal do_action(action: GameAction)
 
 var participant_id: int = 1
 var available_actions: Dictionary = {}
+var participant: BattleParticipant
 
 func update_state(state: GameState):
 	available_actions = state.available_actions
@@ -14,7 +15,7 @@ func update_state(state: GameState):
 		await get_tree().create_timer(1.0).timeout
 
 	
-	var participant = state.battle_participants[participant_id]
+	participant = state.battle_participants[participant_id]
 	
 	if state.active_character == state.CHARACTERS.FIRST:
 		if participant.get_gold() > participant.hand.size()*3 and available_actions.has(ACTIONS.GET_CARD):

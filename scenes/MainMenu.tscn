@@ -48,7 +48,7 @@ offset_top = 422.0
 offset_right = 1088.0
 offset_bottom = 453.0
 scale = Vector2(3, 3)
-text = "Simulate 10 Games"
+text = "Simulate 1000 Games"
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="pressed" from="UI Elements/PlayButton" to="." method="_on_play_button_pressed"]

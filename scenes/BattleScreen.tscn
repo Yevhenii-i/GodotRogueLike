@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c107yds1grwaa"]
 
-[ext_resource type="Script" uid="uid://dbw7hhh76sg86" path="res://scripts/UIManager.gd" id="1_eoump"]
+[ext_resource type="Script" uid="uid://dbw7hhh76sg86" path="res://scripts/PlayerManager.gd" id="1_eoump"]
 [ext_resource type="PackedScene" uid="uid://d1gueq6cfg202" path="res://scenes/PlayerHand.tscn" id="2_be0d5"]
 [ext_resource type="PackedScene" uid="uid://dk7ibf18qbr5m" path="res://scenes/PlayerTownArea.tscn" id="3_e26j6"]
 [ext_resource type="Texture2D" uid="uid://c8igsfj077vo8" path="res://sprites/card_sleeve.png" id="4_6vv1o"]

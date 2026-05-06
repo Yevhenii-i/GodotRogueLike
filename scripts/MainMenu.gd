@@ -15,9 +15,7 @@ func _ready() -> void:
 
 
 func _on_upload_button_pressed() -> void:
-	#temporarily testing one one file
-	var game_save = load("res://game_saves/save.json")
-	api_communicator.upload_game_data_by_json(game_save)
+	api_communicator.start_sync_process() #upload_all_game_data("res://game_saves/not_uploaded/")
 
 
 
@@ -36,7 +34,7 @@ func _on_play_button_pressed() -> void:
 	get_tree().change_scene_to_node(main_game_instance)
 	
 	#main_game_instance.game_ended.connect(_on_game_ended)
-	await main_game_instance.start_game(1, 2)
+	await main_game_instance.start_game(1, 3)
 	
 	get_tree().root.remove_child(main_game_instance)
 	main_game_instance.queue_free()
