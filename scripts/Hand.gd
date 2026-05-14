@@ -27,12 +27,12 @@ func add_card(card_id: int, runtime_card: RuntimeCard): # card_data: CardData):
 
 
 func _handle_card_hover(card_id: int):
-	print(hand[card_id].is_playable)
+	#print(hand[card_id].is_playable)
 	hovered_ids.push_back(card_id)
 
 
 func _handle_card_unhover(card_id: int):
-	print("no touch")
+	#print("no touch")
 	hovered_ids.erase(card_id)
 
 

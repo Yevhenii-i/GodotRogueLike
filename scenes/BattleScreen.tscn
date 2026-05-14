@@ -97,9 +97,9 @@ visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_left = 760.0
-offset_top = 190.0
+offset_top = 230.0
 offset_right = 1160.0
-offset_bottom = 890.0
+offset_bottom = 884.0
 
 [node name="GameResultLabel" type="Label" parent="GameResults" unique_id=1909543207]
 layout_mode = 1

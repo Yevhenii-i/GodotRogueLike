@@ -1,4 +1,4 @@
-class_name APICommunicator extends Node
+class_name GameUploader extends Node
 
 const NOT_UPLOADED_DIR = "res://game_saves/not_uploaded/" #"user://not_uploaded/"
 const UPLOADED_DIR = "res://game_saves/uploaded/" #"user://uploaded/"
@@ -49,7 +49,7 @@ func upload_next_in_queue():
 	var json_data = JSON.parse_string(json_string)
 	file.close()
 	
-	var url = "http://127.0.0.1:8000/games/save"
+	var url = "https://gamewebai.onrender.com/games/save"
 	var headers = ["Content-Type: application/json"]
 	
 	print("Uploading: ", current_file_path)
@@ -87,7 +87,7 @@ func upload_all_game_data(path: String):
 
 
 func upload_game_data(game_history: Array, game_result: Dictionary):
-	var url = "http://127.0.0.1:8000/games/save"
+	var url = "https://gamewebai.onrender.com/games/save"
 	var headers = ["Content-Type: application/json"]
 	
 	var payload = {
@@ -101,14 +101,14 @@ func upload_game_data(game_history: Array, game_result: Dictionary):
 	http_request.request(url, headers, HTTPClient.METHOD_POST, JSON.stringify(payload))
 
 func upload_game_data_by_json(game_save):
-	var url = "http://127.0.0.1:8000/games/save"
+	var url = "https://gamewebai.onrender.com/games/save"
 	var headers = ["Content-Type: application/json"]
 	
 	http_request.request(url, headers, HTTPClient.METHOD_POST, JSON.stringify(game_save.data))
 
 
 func upload_game_data_by_filename(filename: String):
-	var url = "http://127.0.0.1:8000/games/save"
+	var url = "https://gamewebai.onrender.com/games/save"
 	var headers = ["Content-Type: application/json"]
 	var game_save = load(filename)
 	

@@ -136,7 +136,11 @@ func get_action_str_array(playable_cards: Array) -> Array:
 func get_game_result() -> Dictionary:
 	var player_score = battle_participants[0].score
 	var enemy_score = battle_participants[1].score
-	var winner = 0 if player_score > enemy_score else 1
+	var winner = 0 
+	if player_score < enemy_score:
+		winner = 1
+	elif player_score == enemy_score:
+		winner = 2 #draw
 	
 	return {
 		"final_player_score": player_score,
@@ -154,6 +158,7 @@ func to_dict(active_index: int) -> Dictionary:
 	
 	return {
 		"round": self.game_round,
+		"active_character": self.active_character,
 		"self_gold": self.battle_participants[self_index].get_gold(),
 		"self_score": self.battle_participants[self_index].score,
 		"self_hand_size": self.battle_participants[self_index].hand.size(),

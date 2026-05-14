@@ -16,6 +16,7 @@ var game_logger: GameLogger
 var game_history: Array = []
 var game_result: Dictionary
 var state_snapshot: Dictionary
+var game_type: String = "human"
 
 @onready var battle_screen : String = "res://scenes/BattleScreen.tscn"
 
@@ -23,8 +24,8 @@ var state_snapshot: Dictionary
 func _ready() -> void:
 	pass
 
-func start_game(bp1_type: int, bp2_type: int):
-	
+func start_game(bp1_type: int, bp2_type: int, game_type: String):
+	self.game_type = game_type
 	state = GameState.new()
 	game_logger = GameLogger.new()
 	add_child(game_logger)
@@ -37,6 +38,15 @@ func start_game(bp1_type: int, bp2_type: int):
 	state.battle_participants_type = [battle_participant1_type, battle_participant2_type]
 	state.deck = Deck.new()
 	state.deck.create_deck()
+	
+	if !state.battle_participants[0]:
+		print("first nothing")
+		battle_participant1 = BattleParticipant.new()
+		state.battle_participants[0] = battle_participant1
+	if !state.battle_participants[1]:
+		print("second nothing")
+		battle_participant2 = BattleParticipant.new()
+		state.battle_participants[1] = battle_participant2
 	
 	managers = []
 	
@@ -71,6 +81,7 @@ func create_manager(type: int):
 	elif type == PARTICIPANTS.WEB_AI:
 		var manager = WebAIManager.new()
 		add_child(manager)
+		manager.set_game_type(game_type)
 		manager.do_action.connect(_on_manager_action)
 		return manager
 
@@ -94,7 +105,7 @@ func run_battle_loop():
 	
 	game_result = state.get_game_result()
 	#api_communicator.upload_game_data(game_history, game_result)
-	game_logger.save_game(game_history, game_result)
+	game_logger.save_game(game_history, game_result, game_type)
 	
 	if battle_participant1_type == PARTICIPANTS.PLAYER:
 		managers[0].init_end_game(game_result["winner"])
@@ -111,12 +122,17 @@ func run_character_turn(active_index: int):
 		state_snapshot = state.to_dict(active_index) 
 		
 		var active_manager = managers[active_index]
-		active_manager.update_state(state)
-		if state.battle_participants_type[active_index] == PARTICIPANTS.WEB_AI:
-			active_manager.request_move(state_snapshot)
 		
-		if state.battle_participants_type.has(PARTICIPANTS.PLAYER):
+		if state.battle_participants_type.has(PARTICIPANTS.PLAYER) and state.battle_participants_type[active_index] == PARTICIPANTS.ALGORYTHM:
+			await active_manager.update_state(state)
+		else:
+			active_manager.update_state(state)
+		if state.battle_participants_type[active_index] == PARTICIPANTS.PLAYER:
 			await state_changed 
+		elif state.battle_participants_type[active_index] == PARTICIPANTS.WEB_AI:
+			await active_manager.request_move(state_snapshot)
+		
+		
 		if !state.battle_participants_type[active_index] == PARTICIPANTS.PLAYER and state.battle_participants_type[0] == PARTICIPANTS.PLAYER:
 			managers[0].update_graphics(state) #Тимчасово!!!!! замінити це, напевно
 		#else:
@@ -133,11 +149,12 @@ func _on_manager_action(action: GameAction):
 	
 	action.execute(state)
 	
-	game_history.append({
-		"round": state.game_round,
-		"active_actor": action.participant_id,
-		"state_before": state_snapshot,
-		"action_taken": action_record 
-	})
+	if state_snapshot["available_actions"].size() != 1:
+		game_history.append({
+			"round": state.game_round,
+			"active_actor": action.participant_id,
+			"state_before": state_snapshot,
+			"action_taken": action_record 
+		})
 	
 	state_changed.emit()

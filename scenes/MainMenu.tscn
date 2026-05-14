@@ -25,32 +25,72 @@ texture = ExtResource("1_yqorp")
 
 [node name="PlayButton" type="Button" parent="UI Elements" unique_id=572908828]
 layout_mode = 0
-offset_left = 640.0
-offset_top = 423.0
-offset_right = 721.0
-offset_bottom = 454.0
+offset_left = 1390.0
+offset_top = 417.0
+offset_right = 1471.0
+offset_bottom = 448.0
 scale = Vector2(3, 3)
 text = "Play vs AI"
 
 [node name="UploadButton" type="Button" parent="UI Elements" unique_id=1032821193]
 layout_mode = 0
-offset_left = 722.0
-offset_top = 596.0
-offset_right = 876.0
-offset_bottom = 627.0
+offset_left = 1271.0
+offset_top = 538.0
+offset_right = 1425.0
+offset_bottom = 569.0
 scale = Vector2(3, 3)
 text = "Upload Game Data"
 
-[node name="SimulateButton" type="Button" parent="UI Elements" unique_id=1310818992]
+[node name="TrainingButton" type="Button" parent="UI Elements" unique_id=1310818992]
 layout_mode = 0
-offset_left = 954.00006
-offset_top = 422.0
-offset_right = 1088.0
-offset_bottom = 453.0
+offset_left = 74.0
+offset_top = 662.0
+offset_right = 270.0
+offset_bottom = 693.0
 scale = Vector2(3, 3)
-text = "Simulate 1000 Games"
+text = "Simulate training games"
+
+[node name="ReinforceButton" type="Button" parent="UI Elements" unique_id=1111283568]
+layout_mode = 0
+offset_left = 1149.0
+offset_top = 656.0
+offset_right = 1396.0
+offset_bottom = 687.0
+scale = Vector2(3, 3)
+text = "Simulate reinforcement games"
+
+[node name="TrainRequestButton" type="Button" parent="UI Elements" unique_id=329913706]
+layout_mode = 0
+offset_left = 1249.0
+offset_top = 766.00006
+offset_right = 1428.0
+offset_bottom = 797.00006
+scale = Vector2(3, 3)
+text = "Run AI Model Training"
+
+[node name="PlayButton2" type="Button" parent="UI Elements" unique_id=87594238]
+layout_mode = 0
+offset_left = 154.0
+offset_top = 421.00003
+offset_right = 300.0
+offset_bottom = 452.00003
+scale = Vector2(3, 3)
+text = "Play vs Algorythm"
+
+[node name="TrainRequestButton2" type="Button" parent="UI Elements" unique_id=1616039761]
+layout_mode = 0
+offset_left = 1173.0
+offset_top = 875.00006
+offset_right = 1403.0
+offset_bottom = 906.00006
+scale = Vector2(3, 3)
+text = "Run AI Model Reinforcement"
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="pressed" from="UI Elements/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="UI Elements/UploadButton" to="." method="_on_upload_button_pressed"]
-[connection signal="pressed" from="UI Elements/SimulateButton" to="." method="_on_simulate_button_pressed"]
+[connection signal="pressed" from="UI Elements/TrainingButton" to="." method="_on_training_button_pressed"]
+[connection signal="pressed" from="UI Elements/ReinforceButton" to="." method="_on_reinforce_button_pressed"]
+[connection signal="pressed" from="UI Elements/TrainRequestButton" to="." method="_on_train_request_button_pressed"]
+[connection signal="pressed" from="UI Elements/PlayButton2" to="." method="_on_play_button_2_pressed"]
+[connection signal="pressed" from="UI Elements/TrainRequestButton2" to="." method="_on_train_request_button_2_pressed"]
