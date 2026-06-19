@@ -5,7 +5,6 @@ class_name EnemyHand extends Node
 @export var hand_width: int = 1200
 @export var max_card_distance: int = 150
 
-
 var hand: Array[Card] = []
 
 @onready var card_scn : PackedScene = preload("res://scenes/Card.tscn")
@@ -18,8 +17,8 @@ func add_card():
 	card_data.name = "Unknown"
 	card_data.cost = 0
 	card_data.additionalInfo = ""
-	card_data.textureName = ""
-	card_data.type = ""
+	card_data.textureName = "unknown"
+	card_data.type = "unknown"
 	var runtime_card = RuntimeCard.new()
 	runtime_card.data = card_data
 	runtime_card.current_cost = 0
@@ -31,15 +30,14 @@ func add_card():
 	
 	position_cards()
 
+
 func position_cards():
+	@warning_ignore("integer_division")
 	var card_spread = min(hand_width / (hand.size() + 1), max_card_distance)
 	var current_position = -(card_spread * (hand.size() - 1))/2
 	for card in hand :
-		card.set_position(Vector2(current_position, y_pos)) #_update_card_transform(card, current_position)
+		card.set_position(Vector2(current_position, y_pos))
 		current_position += card_spread
-
-#func _update_card_transform(card: Card, current_position: int):
-#	card.set_position(Vector2(current_position, y_pos))
 
 
 func remove_card():

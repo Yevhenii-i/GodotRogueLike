@@ -76,12 +76,12 @@ texture = ExtResource("4_dqwud")
 position = Vector2(-50.875, -25.8125)
 texture = ExtResource("5_hddve")
 
-[node name="Area2D" type="Area2D" parent="." unique_id=2093955779]
+[node name="CardArea2D" type="Area2D" parent="." unique_id=2093955779]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=694191417]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CardArea2D" unique_id=694191417]
 position = Vector2(4, 9)
 shape = SubResource("RectangleShape2D_40ytf")
 
-[connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]
-[connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
-[connection signal="mouse_exited" from="Area2D" to="." method="_on_area_2d_mouse_exited"]
+[connection signal="input_event" from="CardArea2D" to="." method="_on_area_2d_input_event"]
+[connection signal="mouse_entered" from="CardArea2D" to="." method="_on_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="CardArea2D" to="." method="_on_area_2d_mouse_exited"]

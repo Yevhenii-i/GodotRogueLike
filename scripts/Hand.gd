@@ -14,29 +14,28 @@ var hand: Dictionary = {} # card_id -> Card
 var hovered_ids: Array = []
 var current_selected_card_id: int = -1
 
-func add_card(card_id: int, runtime_card: RuntimeCard): # card_data: CardData):
+
+func add_card(card_id: int, runtime_card: RuntimeCard):
 	var card_node = card_scn.instantiate()
-	card_node.setup(card_id, runtime_card) #card_data)
+	card_node.setup(card_id, runtime_card)
 	
 	hand[card_id] = card_node
 	add_child(card_node)
 	card_node.mouse_entered.connect(_handle_card_hover)
 	card_node.mouse_exited.connect(_handle_card_unhover)
-
 	position_cards()
 
 
 func _handle_card_hover(card_id: int):
-	#print(hand[card_id].is_playable)
 	hovered_ids.push_back(card_id)
 
 
 func _handle_card_unhover(card_id: int):
-	#print("no touch")
 	hovered_ids.erase(card_id)
 
 
 func position_cards():
+	@warning_ignore("integer_division")
 	var card_spread = min(hand_width / (hand.size() + 1), max_card_distance)
 	var current_position = -(card_spread * (hand.size() - 1))/2
 	
@@ -46,12 +45,11 @@ func position_cards():
 		current_position += card_spread
 
 
-func remove_card(card_id: int):# -> Node2D:
+func remove_card(card_id: int):
 	if not hand.has(card_id):
 		return
 	
 	var card = hand[card_id]
-	
 	hand.erase(card_id)
 	hovered_ids.erase(card_id)
 	remove_child(card)
@@ -69,17 +67,17 @@ func _ready() -> void:
 	pass
 
 
+@warning_ignore("unused_parameter")
 func _process(delta: float) -> void:
 	current_selected_card_id = -1
 	
 	for card in hand.values():
 		card.unhighlight()
-
+	
 	if hovered_ids.is_empty():
 		return
 	
 	var highest_hovered_id: int = hovered_ids.max()
-	
 	if hand.has(highest_hovered_id):
 		hand[highest_hovered_id].highlight()
 		current_selected_card_id = highest_hovered_id

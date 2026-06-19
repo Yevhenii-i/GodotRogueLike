@@ -2,7 +2,7 @@ class_name GameState extends Resource
 
 enum ACTIONS { PLAY_CARD = 1, GET_GOLD = 2, GET_CARD = 3, END_TURN = 10 }
 
-enum CHARACTERS { FIRST = 1, SECOND = 2, THIRD = 3} #, FOURTH = 4, FIFTH = 5, SIXTH = 6}
+enum CHARACTERS { FIRST = 1, SECOND = 2, THIRD = 3} 
 
 var action_stats: Dictionary = {
 	CHARACTERS.FIRST: {
@@ -35,12 +35,12 @@ var deck: Deck
 var assigned_characters: Dictionary # character: participant_id
 
 var game_round: int
+var surrender: bool = false
 var active_character: int = 0
 var available_actions: Dictionary #action: amount
 
 var battle_participants_type: Array[int]
 var battle_participants: Array[BattleParticipant]
-
 
 func clear_action_availability():
 	available_actions.clear()
@@ -73,25 +73,38 @@ func update_participant(participant_id: int):
 	pass
 
 
+func set_starting_data(bp1_bonus_gold: int, bp2_bonus_gold: int, bp1_bonus_card: int, 
+						bp2_bonus_card : int, deck_removed_cards : int):
+	battle_participants[0].add_gold(bp1_bonus_gold)
+	battle_participants[1].add_gold(bp2_bonus_gold)
+	for i in bp1_bonus_card:
+		var runtime_card = deck.get_random_card()
+		battle_participants[0].add_card(runtime_card)
+	for i in bp2_bonus_card:
+		var runtime_card = deck.get_random_card()
+		battle_participants[1].add_card(runtime_card)
+	for i in deck_removed_cards:
+		deck.remove_random_card()
+	#print(deck.deck_cards_data.size())
+
+
 func assign_characters():
 	var characters = CHARACTERS.values().duplicate()
 	characters.shuffle()
-	
 	assigned_characters.clear()
-	
 	assigned_characters = {characters[0]: 0, characters[1]: 1}
 
 
 func get_active_participant_index() -> int:
 	return assigned_characters.get(active_character, -1)
-	
+
 
 func can_play_card(participant_id: int, card_id: int) -> bool:
 	if not available_actions.has(ACTIONS.PLAY_CARD):
 		return false
 	
 	var participant = get_participant(participant_id)
-	var runtime_card = participant.hand.get(card_id) #var card_data = participant.hand.get(card_id)
+	var runtime_card = participant.hand.get(card_id)
 	if runtime_card == null:
 		return false
 	
@@ -112,6 +125,8 @@ func calculate_scores():
 
 
 func is_game_over() -> bool:
+	if surrender:
+		return true
 	if game_round >= 25:
 		return true
 	for participant in battle_participants:
@@ -137,7 +152,7 @@ func get_game_result() -> Dictionary:
 	var player_score = battle_participants[0].score
 	var enemy_score = battle_participants[1].score
 	var winner = 0 
-	if player_score < enemy_score:
+	if (player_score < enemy_score) or surrender:
 		winner = 1
 	elif player_score == enemy_score:
 		winner = 2 #draw
@@ -155,7 +170,6 @@ func to_dict(active_index: int) -> Dictionary:
 	var opponent_index = 1 if self_index == 0 else 0
 	var cards_for_prediction = self.battle_participants[self_index].get_cards_for_prediction(self.deck.cards_data.size())
 	
-	
 	return {
 		"round": self.game_round,
 		"active_character": self.active_character,
@@ -171,5 +185,5 @@ func to_dict(active_index: int) -> Dictionary:
 		"opponent_active_cards": self.battle_participants[opponent_index].active_cards.values().map(func(runtime_card): return runtime_card.get_id()),
 		"hand_card_records": cards_for_prediction["card_counts"].duplicate_deep(),
 		"unique_hand_card_records": cards_for_prediction["playable_cards"].duplicate_deep() + cards_for_prediction["unplayable_cards"].duplicate_deep(),
-		"available_actions": self.get_action_str_array(cards_for_prediction.get("playable_cards")) #self.available_actions.duplicate_deep() #replace with Array of action.to_dict()
+		"available_actions": self.get_action_str_array(cards_for_prediction.get("playable_cards")) 
 	}

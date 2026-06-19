@@ -1,9 +1,9 @@
 class_name GameLogger extends Node
 
-#it needs to be changed to create unique save name each time
+
 func save_game(game_history: Array, game_result: Dictionary, game_type: String):
 	var current_timestamp = int(Time.get_unix_time_from_system()*1000)
-	var save_file = FileAccess.open("res://game_saves/not_uploaded/save"+ str(current_timestamp) +".dat", FileAccess.WRITE)
+	var save_file = FileAccess.open("user://game_saves/not_uploaded/save"+ str(current_timestamp) +".dat", FileAccess.WRITE)
 	
 	var game_data = {
 		"game_type": game_type,
@@ -17,4 +17,3 @@ func save_game(game_history: Array, game_result: Dictionary, game_type: String):
 	var json_string = JSON.stringify(game_data)
 	save_file.store_line(json_string)
 	save_file.close()
-	print("Saved!")

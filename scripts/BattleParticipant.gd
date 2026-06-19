@@ -2,7 +2,6 @@ class_name BattleParticipant extends Resource
 
 enum CHANGES_TYPES { ADDED = 1, REMOVED = 2 }
 
-
 var gold: int
 var hand: Dictionary[int, RuntimeCard] = {} #card_id -> RuntimeCard
 var card_id_counter: int = 0
@@ -26,18 +25,20 @@ var hand_changes: Dictionary = {CHANGES_TYPES.ADDED : [],
 								CHANGES_TYPES.REMOVED : []}
 var area_changes: Dictionary = {CHANGES_TYPES.ADDED : [], 
 								CHANGES_TYPES.REMOVED : []}
-var current_character: int
+#var current_character: int
 var score: int
+
 
 func spend_gold(amount: int):
 	gold -= amount
 
+
 func add_gold(amount: int):
 	gold += amount
 
+
 func get_gold() -> int:
 	return gold
-
 
 
 func get_cards_for_prediction(deck_size: int) -> Dictionary:
@@ -49,17 +50,12 @@ func get_cards_for_prediction(deck_size: int) -> Dictionary:
 	cards_for_prediction["card_counts"].resize(deck_size)
 	cards_for_prediction["card_counts"].fill(0)
 	
-	
-	#var cards_predicted: Dictionary = {} #card_id: Array["key", id in cards_for_predictions Array]
-	
 	var temp_bonuses = bonuses.duplicate_deep()
 	
 	for card_id in hand.keys():
 		var runtime_card = hand.get(card_id)
 		
 		if cards_for_prediction["card_counts"][runtime_card.data.id] != 0:
-			#var card_record = cards_for_prediction[cards_predicted[runtime_card.data.id][0]][cards_predicted[runtime_card.data.id][1]].duplicate_deep()
-			#cards_for_prediction[cards_predicted[runtime_card.data.id][0]].append(card_record)
 			cards_for_prediction["card_counts"][runtime_card.data.id] += 1
 			continue
 		
@@ -78,7 +74,6 @@ func get_cards_for_prediction(deck_size: int) -> Dictionary:
 				card_record["current_value"] -= bonuses["only_unique_card"]
 			elif active_card_types["unique"] == 0:
 				card_record["potential_value"] += temp_bonuses["only_unique_card"]
-		
 		
 		if active_cards.size() == 7:
 			card_record["current_value"] += temp_bonuses["full_active_cards"]
@@ -103,19 +98,15 @@ func get_cards_for_prediction(deck_size: int) -> Dictionary:
 			else:
 				card_record["current_value"] += temp_bonuses["not_full_card_types"]
 		
-		
 		if runtime_card.data.type == "unique":
 			for effect in runtime_card.data.effects.keys():
 				temp_bonuses[effect] -= runtime_card.data.effects.get(effect)
 		
 		if runtime_card.current_cost <= gold:
 			cards_for_prediction["playable_cards"].append(card_record)
-			#cards_predicted.set(runtime_card.data.id, ["playable_cards", cards_for_prediction["playable_cards"].size()-1])
 		else:
 			cards_for_prediction["unplayable_cards"].append(card_record)
-			#cards_predicted.set(runtime_card.data.id, ["unplayable_cards", cards_for_prediction["unplayable_cards"].size()-1])
 		cards_for_prediction["card_counts"][runtime_card.data.id]+=1
-	
 	
 	return cards_for_prediction
 
@@ -140,23 +131,22 @@ func consume_area_changes() -> Dictionary:
 
 
 func add_card(runtime_card: RuntimeCard):
-	hand[card_id_counter] = runtime_card ### I JUST ADDED IT INSTEAAD OF CARD_DATA. ADJUST THE REST OF THE APP!!!
+	hand[card_id_counter] = runtime_card
 	hand_changes[CHANGES_TYPES.ADDED].push_back(card_id_counter)
 	card_id_counter += 1
 
 
 func play_card(card_id: int):
-	var runtime_card: RuntimeCard = hand[card_id] #var card_data = hand[card_id]
-	active_cards[card_id] = runtime_card #card_data
+	var runtime_card: RuntimeCard = hand[card_id]
+	active_cards[card_id] = runtime_card
 	active_card_types[runtime_card.data.type] += 1
 	hand_changes[CHANGES_TYPES.REMOVED].push_back(card_id)
 	area_changes[CHANGES_TYPES.ADDED].push_back(card_id)
-	spend_gold(runtime_card.current_cost) #spend_gold(card_data.cost)
+	spend_gold(runtime_card.current_cost)
 	if !runtime_card.data.effects.is_empty():
 		for effect in runtime_card.data.effects.keys():
 			bonuses[effect] += runtime_card.data.effects.get(effect)
 	hand.erase(card_id)
-	
 
 
 func calculate_score():
@@ -167,14 +157,13 @@ func calculate_score():
 	var bonus_value = 0
 	if active_cards.size() == 8:
 		bonus_value += bonuses["full_active_cards"]
-	else:
-		bonus_value += bonuses["not_full_card_types"]
 	
 	if !active_card_types.values().has(0):
 		bonus_value += bonuses["full_card_types"]
+	else:
+		bonus_value += bonuses["not_full_card_types"]
 	
 	if active_card_types.get("unique") == 1:
 		bonus_value += bonuses["only_unique_card"]
 	
 	score = card_value + bonus_value
-	pass

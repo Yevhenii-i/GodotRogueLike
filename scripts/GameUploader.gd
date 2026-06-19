@@ -1,9 +1,12 @@
 class_name GameUploader extends Node
 
-const NOT_UPLOADED_DIR = "res://game_saves/not_uploaded/" #"user://not_uploaded/"
-const UPLOADED_DIR = "res://game_saves/uploaded/" #"user://uploaded/"
+const NOT_UPLOADED_DIR = "user://game_saves/not_uploaded/"
+const UPLOADED_DIR = "user://game_saves/uploaded/"
 
 var http_request: HTTPRequest
+
+var url = "https://gamewebai.onrender.com/games/save"
+var headers = ["Content-Type: application/json"]
 
 var upload_queue: Array[String] = []
 var current_file_path: String = ""
@@ -11,8 +14,11 @@ var current_file_path: String = ""
 func _ready():
 	http_request = HTTPRequest.new()
 	add_child(http_request)
+	var dir = DirAccess.open("user://")
+	if not dir.dir_exists("user://game_saves/"):
+		dir.make_dir_recursive("user://game_saves/")
 	
-	var dir = DirAccess.open("res://game_saves/") #("user://")
+	dir = DirAccess.open("user://game_saves/")
 	if not dir.dir_exists(NOT_UPLOADED_DIR):
 		dir.make_dir_recursive(NOT_UPLOADED_DIR)
 	if not dir.dir_exists(UPLOADED_DIR):
@@ -42,15 +48,12 @@ func upload_next_in_queue():
 	var file = FileAccess.open(full_path, FileAccess.READ)
 	if not file:
 		print("Could not read file: ", current_file_path)
-		upload_next_in_queue() # Skip and try next
+		upload_next_in_queue()
 		return
 		
 	var json_string = file.get_as_text()
 	var json_data = JSON.parse_string(json_string)
 	file.close()
-	
-	var url = "https://gamewebai.onrender.com/games/save"
-	var headers = ["Content-Type: application/json"]
 	
 	print("Uploading: ", current_file_path)
 	http_request.request(url, headers, HTTPClient.METHOD_POST, JSON.stringify(json_data))
@@ -59,10 +62,8 @@ func upload_next_in_queue():
 func move_file_to_uploaded(file_name: String):
 	var old_path = NOT_UPLOADED_DIR + file_name
 	var new_path = UPLOADED_DIR + file_name
+	var dir = DirAccess.open("user://game_saves/")
 	
-	var dir = DirAccess.open("res://game_saves/") #("user://")
-	
-	# If file with same name exists in 'uploaded', remove it first
 	if dir.file_exists(new_path):
 		dir.remove(new_path)
 		
@@ -87,9 +88,6 @@ func upload_all_game_data(path: String):
 
 
 func upload_game_data(game_history: Array, game_result: Dictionary):
-	var url = "https://gamewebai.onrender.com/games/save"
-	var headers = ["Content-Type: application/json"]
-	
 	var payload = {
 		"player_score": game_result.final_player_score,
 		"opponent_score": game_result.final_enemy_score,
@@ -101,26 +99,19 @@ func upload_game_data(game_history: Array, game_result: Dictionary):
 	http_request.request(url, headers, HTTPClient.METHOD_POST, JSON.stringify(payload))
 
 func upload_game_data_by_json(game_save):
-	var url = "https://gamewebai.onrender.com/games/save"
-	var headers = ["Content-Type: application/json"]
-	
 	http_request.request(url, headers, HTTPClient.METHOD_POST, JSON.stringify(game_save.data))
 
 
 func upload_game_data_by_filename(filename: String):
-	var url = "https://gamewebai.onrender.com/games/save"
-	var headers = ["Content-Type: application/json"]
 	var game_save = load(filename)
 	
 	http_request.request(url, headers, HTTPClient.METHOD_POST, JSON.stringify(game_save.data))
-	
 
 
-func _on_request_completed(result, response_code, headers, body):
+func _on_request_completed(_result, response_code, _headers, _body):
 	if response_code == 200 or response_code == 201:
 		move_file_to_uploaded(current_file_path)
 		upload_next_in_queue()
 	else:
 		print("Failed to upload ", current_file_path, " Code: ", response_code)
-		# Optional: Stop queue or skip? Here we stop to avoid spamming errors.
 		current_file_path = ""

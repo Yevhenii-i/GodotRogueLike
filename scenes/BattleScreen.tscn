@@ -28,7 +28,7 @@ position = Vector2(960, 1086.035)
 x_pos = 0
 y_pos = -128
 
-[node name="PlayerTownArea" parent="." unique_id=139850062 instance=ExtResource("3_e26j6")]
+[node name="PlayerActiveArea" parent="." unique_id=139850062 instance=ExtResource("3_e26j6")]
 position = Vector2(480, 540)
 
 [node name="DeckButton" type="TextureButton" parent="." unique_id=893373976]
@@ -40,8 +40,9 @@ texture_normal = ExtResource("4_6vv1o")
 texture_hover = ExtResource("6_tji62")
 texture_disabled = ExtResource("5_oihk3")
 stretch_mode = 0
+metadata/_edit_use_anchors_ = true
 
-[node name="MoneyButton" type="TextureButton" parent="." unique_id=140917240]
+[node name="GoldButton" type="TextureButton" parent="." unique_id=140917240]
 offset_left = 871.0
 offset_top = 538.0
 offset_right = 972.0
@@ -50,17 +51,19 @@ texture_normal = ExtResource("7_urolh")
 texture_hover = ExtResource("8_rrw1x")
 texture_disabled = ExtResource("9_eoump")
 stretch_mode = 0
+metadata/_edit_use_anchors_ = true
 
 [node name="Background" type="Sprite2D" parent="." unique_id=945011050]
 z_index = -1
 position = Vector2(960, 540)
 texture = ExtResource("10_rrw1x")
 
-[node name="PlayerMoney" parent="." unique_id=257936867 instance=ExtResource("11_eoump")]
+[node name="PlayerGold" parent="." unique_id=257936867 instance=ExtResource("11_eoump")]
 position = Vector2(56, 1012)
 
-[node name="MoneyAmount" parent="PlayerMoney" index="0" unique_id=654588070]
+[node name="GoldAmount" parent="PlayerGold" index="0" unique_id=654588070]
 text = "0"
+metadata/_edit_use_anchors_ = true
 
 [node name="EnemyHand" parent="." unique_id=1620162561 instance=ExtResource("12_1fnen")]
 position = Vector2(960, -10)
@@ -71,14 +74,16 @@ offset_top = 669.0
 offset_right = 993.0
 offset_bottom = 775.0
 text = "End Turn"
+metadata/_edit_use_anchors_ = true
 
-[node name="EnemyMoney" parent="." unique_id=1198094295 instance=ExtResource("11_eoump")]
+[node name="EnemyGold" parent="." unique_id=1198094295 instance=ExtResource("11_eoump")]
 position = Vector2(56, 71)
 
-[node name="MoneyAmount" parent="EnemyMoney" index="0" unique_id=654588070]
+[node name="GoldAmount" parent="EnemyGold" index="0" unique_id=654588070]
 text = "0"
+metadata/_edit_use_anchors_ = true
 
-[node name="EnemyTownArea" parent="." unique_id=193257143 instance=ExtResource("3_e26j6")]
+[node name="EnemyActiveArea" parent="." unique_id=193257143 instance=ExtResource("3_e26j6")]
 position = Vector2(1371, 540)
 
 [node name="CharacterArea" parent="." unique_id=1680390185 instance=ExtResource("13_soxni")]
@@ -91,6 +96,7 @@ offset_right = 47.0
 offset_bottom = 564.0
 text = "0"
 label_settings = SubResource("LabelSettings_soxni")
+metadata/_edit_use_anchors_ = true
 
 [node name="GameResults" type="Control" parent="." unique_id=419754598]
 visible = false
@@ -123,13 +129,21 @@ offset_right = 100.0
 offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 0
-text = "Return to Main Menu"
+text = "Continue"
+
+[node name="ExitToMenuButton" type="Button" parent="." unique_id=307631221]
+offset_left = 1778.0
+offset_top = 16.0
+offset_right = 1899.0
+offset_bottom = 112.0
+text = "Surrender"
 
 [connection signal="card_activate" from="PlayerHand" to="." method="_on_player_hand_card_activate"]
 [connection signal="pressed" from="DeckButton" to="." method="_on_deck_button_pressed"]
-[connection signal="pressed" from="MoneyButton" to="." method="_on_money_button_pressed"]
+[connection signal="pressed" from="GoldButton" to="." method="_on_money_button_pressed"]
 [connection signal="pressed" from="EndTurnButton" to="." method="_on_end_turn_button_pressed"]
 [connection signal="pressed" from="GameResults/ReturnToMainMenuButton" to="." method="_on_return_to_main_menu_button_pressed"]
+[connection signal="pressed" from="ExitToMenuButton" to="." method="_on_exit_to_menu_button_pressed"]
 
-[editable path="PlayerMoney"]
-[editable path="EnemyMoney"]
+[editable path="PlayerGold"]
+[editable path="EnemyGold"]

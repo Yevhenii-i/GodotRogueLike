@@ -1,6 +1,5 @@
 class_name GetCardsAction extends GameAction
 
-#var participant_id: int
 var cards_amount: int
 var runtime_card: RuntimeCard
 
@@ -13,6 +12,9 @@ func execute(state: GameState):
 	
 	state.remove_action_availability(state.ACTIONS.GET_GOLD)
 	state.remove_action_availability(state.ACTIONS.GET_CARD)
+	
+	return true
 
+@warning_ignore("unused_parameter")
 func to_str(state: GameState) -> String:
 	return "get_card_" + str(self.cards_amount)

@@ -13,19 +13,17 @@ signal mouse_exited(card_id: int)
 @onready var baseSprite: Sprite2D = $CardBaseSprite
 
 var card_id: int
-var runtime_card: RuntimeCard #var card_data: CardData
+var runtime_card: RuntimeCard
 
 var is_playable: bool = false
 
 
-func setup(_card_id: int, _runtime_card: RuntimeCard): #_card_data: CardData):
+func setup(_card_id: int, _runtime_card: RuntimeCard):
 	card_id = _card_id
-	runtime_card = _runtime_card #card_data = _card_data
-
+	runtime_card = _runtime_card
 
 func _ready() -> void:
 	_update_graphics()
-
 
 func _update_graphics():
 	costLabel.set_text(str(runtime_card.current_cost))
@@ -56,7 +54,3 @@ func _on_area_2d_mouse_entered():
 
 func _on_area_2d_mouse_exited():
 	mouse_exited.emit(card_id)
-
-
-func _on_area_2d_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
-	pass # Replace with function body.

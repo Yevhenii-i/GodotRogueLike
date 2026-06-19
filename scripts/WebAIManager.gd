@@ -29,11 +29,8 @@ func _ready() -> void:
 	http_request = HTTPRequest.new()
 	add_child(http_request)
 	
-	
-	
 	for x in NUM_UNIQUE_CARDS:
 		action_map.set(("play_card_" + str(x)), [ACTIONS.PLAY_CARD, x])
-		print(action_map[("play_card_" + str(x))])
 	
 	http_request.request_completed.connect(_on_request_completed)
 
@@ -42,7 +39,7 @@ func set_game_type(game_type: String):
 	if game_type == "reinforcement":
 		url = "https://gamewebai.onrender.com/ai/reinforce"
 	else:
-		url = "https://gamewebai.onrender.com/ai/move"
+		url = "https://gamewebai.onrender.com/ai/move" #"http://127.0.0.1:8000/ai/move"
 
 
 func update_state(state: GameState):
@@ -118,7 +115,7 @@ func end_turn_action() -> void:
 	do_action.emit(action)
 
 
-func _on_request_completed(result, response_code, headers, body):
+func _on_request_completed(_result, response_code, _headers, body):
 	var response = body.get_string_from_utf8()
 	print(response)
 	if response_code == 200 or response_code == 201:

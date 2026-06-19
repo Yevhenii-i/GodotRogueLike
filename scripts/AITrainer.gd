@@ -22,7 +22,7 @@ func request_reinforcement():
 	http_request.request(url, headers, HTTPClient.METHOD_POST)
 
 
-func _on_request_completed(result, response_code, headers, body):
+func _on_request_completed(_result, response_code, _headers, _body):
 	if response_code == 200 or response_code == 201:
 		print("Success!")
 	else:

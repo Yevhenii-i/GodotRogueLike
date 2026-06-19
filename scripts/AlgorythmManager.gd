@@ -4,7 +4,6 @@ enum ACTIONS { PLAY_CARD = 1, GET_GOLD = 2, GET_CARD = 3, END_TURN = 10 }
 
 signal do_action(action: GameAction)
 
-
 var participant_id: int = 1
 var available_actions: Dictionary = {}
 var participant: BattleParticipant
@@ -13,7 +12,6 @@ func update_state(state: GameState):
 	available_actions = state.available_actions
 	if state.battle_participants_type.has(1):
 		await get_tree().create_timer(1.0).timeout
-
 	
 	participant = state.battle_participants[participant_id]
 	
@@ -66,15 +64,13 @@ func update_state(state: GameState):
 					activate_card_action(hand_card_id)
 					return
 				
-			
-			#for card_id in participant.hand.keys():
-			#	if state.can_play_card(participant_id, card_id):
-			#		activate_card_action(card_id)
-			#		return
-	
 	end_turn_action()
 	return
 
+
+@warning_ignore("unused_parameter")
+func request_move(state_snapshot: Dictionary):
+	pass
 
 
 func activate_card_action(card_id: int) -> void:
